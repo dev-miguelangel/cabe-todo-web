@@ -12,9 +12,14 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ext = process.env.CABE_TODO_EXT || join(root, '..', 'pert-day');
 const check = process.argv.includes('--check');
 
-/** Lo compartido: la lógica pura (core/) y las utilidades sin DOM ni APIs de Chrome. */
+/** Lo compartido: la lógica pura (core/), el estado y las utilidades sin APIs de Chrome. */
 const SHARED_DIRS = ['src/core'];
-const SHARED_FILES = ['src/utils/dates.js', 'src/utils/text.js', 'src/utils/markdown.js', 'src/utils/md-format.js'];
+const SHARED_FILES = [
+  'src/utils/dates.js', 'src/utils/text.js', 'src/utils/markdown.js', 'src/utils/md-format.js',
+  // Estado, acciones y formato del respaldo. Dónde se guardan los datos es propio de cada proyecto
+  // (src/services/storage-backend.js: chrome.storage en la extensión, IndexedDB aquí).
+  'src/services/store.js', 'src/services/storage.js', 'src/services/casio.js',
+];
 
 if (!existsSync(join(ext, 'manifest.json'))) {
   console.error(`No encuentro la extensión en ${ext}. Usa CABE_TODO_EXT=/ruta/a/cabe-todo-ext.`);

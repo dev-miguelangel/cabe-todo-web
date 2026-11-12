@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1db954">
+  <title>Documentación · Cabe Todo</title>
+  <link rel="icon" href="/icons/icon128.png">
+  <link rel="stylesheet" href="/src/styles/app.css">
+  <link rel="stylesheet" href="/src/styles/doc.css">
+  <link rel="stylesheet" href="/src/styles/theme-trello.css">
+  <script src="/src/utils/theme-boot.js"></script>
+</head>
+<body class="doc-page">
+  <a class="doc-back" href="/" id="doc-back">‹ Volver</a>
+  <button type="button" class="theme-toggle" id="theme-toggle"></button>
+  <main class="doc-main">
+    <header class="doc-header" id="doc-head"></header>
+    <section class="doc-card" id="doc-editor" aria-label="Documentación"></section>
+  </main>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <!-- Lo que se imprime / exporta a PDF (solo visible al imprimir) -->
+  <article class="print-area" id="print-area" aria-hidden="true"></article>
+  <script type="module" src="/src/doc.js"></script>
+</body>
+</html>

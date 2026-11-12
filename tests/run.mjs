@@ -39,3 +39,34 @@ const mod = (p) => import(pathToFileURL(join(root, 'public', p)).href);
   assert.ok(fits.probability > tight.probability, 'más trabajo, menos probabilidad');
   console.log('OK: pronóstico compartido');
 }
+
+// ---------- Respaldo: el formato de la extensión se lee igual aquí ----------
+{
+  const { parseBackup, makeBackup } = await mod('src/services/storage.js');
+  const fromExtension = JSON.stringify({
+    app: 'cabe-todo', version: 1, exported_at: '2026-11-11T12:00:00.000Z',
+    tasks: [{ id: 't1', title: 'Diseñar landing', minutes: 60, date: '2026-11-12', block: 'am', done: false, order: 0, epic_id: 'e1' }],
+    epics: [{ id: 'e1', name: 'Lanzar web', color: '#1db954', target_date: null, archived: false }],
+    routines: [{ id: 'r1', title: 'Standup', days: [1, 2, 3, 4, 5], minutes: 15, block: 'am', start_date: '2026-11-11' }],
+    settings: { theme: 'trello' },
+  });
+  const data = parseBackup(fromExtension);
+  assert.equal(data.tasks[0].title, 'Diseñar landing');
+  assert.equal(data.tasks[0].doc, '', 'completa los campos nuevos');
+  assert.equal(data.settings.theme, 'trello');
+  assert.equal(data.settings.blocks.length, 2, 'ajustes con valores por defecto');
+  const again = parseBackup(JSON.stringify(makeBackup(data)));
+  assert.deepEqual(again.tasks, data.tasks, 'exportar e importar de nuevo no cambia nada');
+  assert.deepEqual(again.routines, data.routines);
+  assert.throws(() => parseBackup('{"app":"otra"}'), /no es un respaldo/);
+  console.log('OK: respaldo compatible con la extensión');
+}
+
+// ---------- Estado: store.js carga con el almacenamiento de la web ----------
+{
+  const S = await mod('src/services/store.js');
+  await S.initStore(); // sin IndexedDB ni localStorage (Node): parte vacío
+  const t = S.addFromText('Informe 2h tarde', { date: '2026-11-11', block: null });
+  assert.deepEqual([t.title, t.minutes, t.block], ['Informe', 120, 'pm']);
+  console.log('OK: store compartido con el almacenamiento web');
+}

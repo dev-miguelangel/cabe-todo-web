@@ -11,7 +11,9 @@ Sitio web **mobile-first** e **instalable (PWA)**, hecho con JavaScript, HTML y 
 - **Funciona en local.** Tus datos quedan en tu celular: sin cuentas, sin servidores y sin analítica.
 - **Usa el mismo respaldo.** Lo que exportas en la extensión se importa aquí, y al revés.
 
-> 🚧 En construcción. Ver el [plan](#plan).
+**Producción:** https://cabe-todo-web.vercel.app
+
+> 🚧 En construcción. Ver el [plan](PLAN.md).
 
 ## Desarrollo
 
@@ -29,9 +31,14 @@ Para probar en el celular, abre la URL de vista previa que Vercel crea en cada p
 
 ## Código compartido con la extensión
 
-La lógica pura vive en la extensión y se **copia** aquí:
+La lógica vive en la extensión y se **copia** aquí:
 - `src/core/`: pronóstico PERT, parser, bloques, rutinas y plantillas;
+- `src/services/store.js` (estado y acciones), `storage.js` (datos guardados y formato del respaldo) y `casio.js` (sonido);
 - utilidades sin DOM: `dates`, `text`, `markdown` y `md-format`.
+
+Dónde se guardan los datos es propio de cada proyecto: `src/services/storage-backend.js` usa `chrome.storage` en la extensión e **IndexedDB** aquí, con aviso a otras pestañas y almacenamiento persistente. Como el formato del respaldo es el mismo código, un respaldo de la extensión se importa aquí sin cambios, y al revés.
+
+Las vistas y componentes (`views/`, `components/`, `utils/ui.js`, `tooltip.js`) se copiaron una vez desde la extensión v1.0.7 y se adaptan al celular aquí: **no** se sincronizan.
 
 ```bash
 npm run sync                                         # copia desde ../pert-day
@@ -45,13 +52,16 @@ Cada archivo copiado empieza con `⚠ Copiado desde cabe-todo-ext`. **No se edit
 ```
 cabe-todo-web/
 ├── public/                 # lo que se publica
-│   ├── index.html
+│   ├── index.html          # la app: Hoy, Épicas, Hechas, Rutinas, Docs y Ajustes
+│   ├── doc.html            # documentación de una tarea (?task=…)
 │   ├── icons/
 │   └── src/
-│       ├── app.js          # arranque
+│       ├── app.js  doc.js  # arranque de cada página
 │       ├── core/           # copiado desde la extensión
-│       ├── utils/          # dates, text, markdown, md-format: copiados
-│       ├── services/  views/  components/  styles/
+│       ├── services/       # store, storage, casio: copiados · storage-backend: IndexedDB (propio)
+│       ├── views/  components/   # portados desde la extensión
+│       ├── utils/          # dates, text, markdown, md-format: copiados · ui, tooltip, theme-boot: portados
+│       └── styles/         # app.css, doc.css, theme-trello.css
 ├── scripts/
 │   ├── sync-core.mjs       # copia el código compartido
 │   └── build.mjs           # minifica public/ → dist/
@@ -69,18 +79,16 @@ Vercel corre `npm run build` y publica `dist/`. La configuración está en `verc
 
 ## Plan
 
+Ver [PLAN.md](PLAN.md): decisiones, diferencias con la extensión y fases.
+
 | Fase | Qué | Estado |
 | --- | --- | --- |
-| 0 | Repositorio, estructura, código compartido y despliegue en Vercel | ✅ |
-| 1 | Vistas de la extensión (Hoy, Épicas, Hechas, Rutinas, Docs, Ajustes) y datos en IndexedDB | ⏳ |
-| 2 | Diseño para celular: toques de 44 px, notch, teclado, arrastrar con el dedo | ⏳ |
-| 3 | PWA: manifest, service worker, uso sin conexión, instalar en Android e iPhone | ⏳ |
-| 4 | Respaldo: exportar con el menú de compartir del celular, importar con confirmación | ⏳ |
+| 0 | Repositorio, código compartido y despliegue en Vercel | ✅ |
+| 1 | Vistas de la extensión y datos en IndexedDB | ✅ |
+| 2 | Diseño para celular | ⏳ |
+| 3 | PWA instalable, sin conexión, avisos con la app abierta | ⏳ |
+| 4 | Respaldo con el menú de compartir del celular | ⏳ |
 | 5 | Versión 1.0.0 | ⏳ |
-
-Diferencias con la extensión:
-- Los avisos y el sonido del temporizador solo funcionan con la app abierta, porque la web no tiene alarmas en segundo plano sin servidor.
-- No hay temporizador flotante ni atajos de teclado.
 
 ## Privacidad
 
