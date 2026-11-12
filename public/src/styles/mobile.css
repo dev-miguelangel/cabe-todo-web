@@ -112,3 +112,13 @@ body.keyboard-open .toast { bottom: 12px; }
 /* Ajustes: versión y enlaces al final */
 .app-foot { margin: 8px 16px 24px; font-size: 12px; color: var(--muted); text-align: center; }
 .app-foot a { color: inherit; }
+
+/* Sincronizar con Google Drive: botón ⟳ de Hoy y estado "sincronizando" */
+.day-nav .sync-btn { width: 28px; height: 28px; margin-left: 6px; }
+.day-nav .sync-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@media (pointer: coarse) { .day-nav .sync-btn { width: 40px; height: 40px; } }
+.sync-btn.is-busy svg { animation: drive-spin 0.9s linear infinite; }
+.is-busy { opacity: 0.7; cursor: progress; }
+@keyframes drive-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sync-btn.is-busy svg { animation: none; } }
+.drive-section .ss-body p { margin: 0 0 8px; }

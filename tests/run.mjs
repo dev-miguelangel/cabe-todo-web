@@ -99,3 +99,55 @@ const mod = (p) => import(pathToFileURL(join(root, 'public', p)).href);
   assert.deepEqual(dueReminders({ tasks: running, settings }, ms(9, 44), ms(9, 45)).map((e) => e.type), ['meeting-end']);
   console.log('OK: avisos (fin de bloque, temporizador, reuniones)');
 }
+
+// ---------- Sincronizar con Drive: la secuencia, con un Drive de mentira ----------
+{
+  const { runSync } = await mod('src/services/drive-sync.js');
+  const S = await mod('src/services/store.js');
+  const fakeDrive = (initial = null) => {
+    const d = { file: initial, version: 0, uploads: 0, bumpOnce: false };
+    return Object.assign(d, {
+      async find() { return d.file ? { id: 'f1' } : null; },
+      async download() { return d.file; },
+      async modified() {
+        if (d.bumpOnce) { d.bumpOnce = false; d.version += 1; } // otro equipo sube justo ahora
+        return `v${d.version}`;
+      },
+      async create(text) { d.file = text; d.version += 1; return { id: 'f1' }; },
+      async update(id, text) { d.file = text; d.version += 1; d.uploads += 1; return {}; },
+    });
+  };
+  let undo = 0;
+  const local = { exportText: () => S.exportBackup(), read: (t) => S.readBackup(t), merge: (x) => S.mergeBackup(x), saveUndo: async () => { undo += 1; } };
+
+  // 1) Sin archivo en Drive: se crea con lo local
+  const drive = fakeDrive();
+  S.addFromText('En el celular 30m', { date: null, block: null });
+  let r = await runSync(drive, local);
+  assert.equal(r.created, true);
+  assert.ok(JSON.parse(drive.file).tasks.some((t) => t.title === 'En el celular'));
+
+  // 2) Otro equipo subió una tarea: llega aquí y lo mezclado se sube
+  const other = JSON.parse(drive.file);
+  other.tasks.push({ id: 'desde-pc', title: 'Desde el computador', minutes: 45, date: null, block: null, done: false, order: 9, updated_at: new Date(Date.now() + 1000).toISOString() });
+  drive.file = JSON.stringify(other);
+  r = await runSync(drive, local, { fileId: 'f1' });
+  assert.equal(r.summary.tasks.added, 1);
+  assert.ok(S.findTask('desde-pc'), 'llegó la tarea del otro equipo');
+  assert.ok(JSON.parse(drive.file).tasks.some((t) => t.id === 'desde-pc'), 'y queda en Drive');
+  assert.equal(undo, 1, 'antes de mezclar se guarda una copia para deshacer');
+
+  // 3) Otro equipo sube mientras tanto: se vuelve a traer y se sube una sola vez
+  drive.bumpOnce = true;
+  const uploads = drive.uploads;
+  await runSync(drive, local, { fileId: 'f1' });
+  assert.equal(drive.uploads, uploads + 1);
+
+  // 4) Archivo dañado: no se toca nada ni se sube
+  drive.file = '{ esto no es un respaldo';
+  const before = S.state.tasks.length;
+  await assert.rejects(() => runSync(drive, local, { fileId: 'f1' }), /JSON válido/);
+  assert.equal(S.state.tasks.length, before);
+  assert.equal(drive.file, '{ esto no es un respaldo');
+  console.log('OK: sincronizar con Drive (crear, mezclar, choque entre equipos, archivo dañado)');
+}

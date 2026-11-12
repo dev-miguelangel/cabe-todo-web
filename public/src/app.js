@@ -17,6 +17,7 @@ import { installKeyboardWatch } from './utils/mobile.js';
 import { installPwa } from './utils/pwa.js';
 import { startReminders } from './services/reminders.js';
 import { playCasio } from './services/casio.js';
+import { setupDrive, renderDrive } from './views/drive-ui.js';
 import { TAB_IDS, normalizeTabOrder } from './core/tabs.js';
 
 const TAB_KEY = 'cabetodo:tab';
@@ -42,6 +43,7 @@ function render() {
   applyTheme(state.settings.theme);
   renderThemeToggle();
   renderTabOrder();
+  renderDrive(); // "hace 5 min" se mantiene al día
   document.querySelectorAll('.tab').forEach((btn) => {
     const active = btn.dataset.tab === state.tab;
     btn.classList.toggle('active', active);
@@ -85,6 +87,7 @@ async function init() {
   setupRoutines();
   setupDocs();
   setupSettings();
+  setupDrive();
   setupKeyboard();
   ensureRoutines(); // tareas que se repiten y tocan hoy
   // Avisos de fin de bloque, temporizador en cero y reuniones (con la app abierta)

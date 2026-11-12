@@ -20,6 +20,10 @@ Sitio web **mobile-first** e **instalable (PWA)**, hecho con JavaScript, HTML y 
 
 Instalada, abre a pantalla completa y funciona sin conexión. Cuando hay una versión nueva, la app avisa con **Actualizar**.
 
+## Sincronizar con Google Drive (experimental)
+
+**Ajustes → Sincronizar con Google Drive → Conectar**. Guarda tus datos en un archivo privado de tu Drive (`Cabe Todo/cabe-todo-sync.json`); después, **Sincronizar ahora** (o el botón ⟳ de Hoy) lo trae, lo mezcla con lo local y sube el resultado. La app solo puede ver ese archivo (permiso `drive.file`). Por ahora la app de Google está en modo prueba: solo funciona con cuentas autorizadas. Ver el [plan de sincronización](https://github.com/dev-miguelangel/cabe-todo-ext/blob/main/docs/plan-sincronizacion.md).
+
 ## Pasar tus datos entre la extensión y el celular
 
 1. En la extensión: **Ajustes → Respaldo → Exportar**. En el celular: **Ajustes → Respaldo → Compartir…** (o Descargar).
@@ -72,7 +76,7 @@ cabe-todo-web/
 │   └── src/
 │       ├── app.js  doc.js  # arranque de cada página
 │       ├── core/           # copiado desde la extensión
-│       ├── services/       # store, storage, casio: copiados · storage-backend (IndexedDB), reminders (avisos), backup-share (compartir y deshacer): propios
+│       ├── services/       # store, storage, casio: copiados · storage-backend (IndexedDB), reminders (avisos), backup-share (compartir y deshacer), drive-sync (Google Drive): propios
 │       ├── views/  components/   # portados desde la extensión
 │       ├── utils/          # dates, text, markdown, md-format: copiados · ui, tooltip, theme-boot: portados · mobile.js: teclado · pwa.js: service worker e instalación
 │       └── styles/         # app.css, doc.css, theme-trello.css: portados · mobile.css: propio del celular

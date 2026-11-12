@@ -65,7 +65,7 @@ export async function shareBackup() {
 }
 
 /** Copia de lo actual antes de importar (para Deshacer). */
-async function saveUndoPoint() {
+export async function saveUndoPoint() {
   await setRaw({ [UNDO_KEY]: { at: new Date().toISOString(), backup: exportBackup() } });
 }
 
