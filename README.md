@@ -11,9 +11,20 @@ Sitio web **mobile-first** e **instalable (PWA)**, hecho con JavaScript, HTML y 
 - **Funciona en local.** Tus datos quedan en tu celular: sin cuentas, sin servidores y sin analítica.
 - **Usa el mismo respaldo.** Lo que exportas en la extensión se importa aquí, y al revés. En el celular, **Compartir…** lo envía por WhatsApp, correo o Drive, y al importar se guarda una copia de lo anterior para poder deshacer.
 
-**Producción:** https://cabe-todo-web.vercel.app
+**Ábrela en tu celular:** https://cabe-todo-web.vercel.app
 
-> 🚧 En construcción. Ver el [plan](PLAN.md).
+## Instalar en el celular
+
+- **Android (Chrome):** abre la URL → Ajustes → **Instalar la app** → Instalar (o menú ⋮ → Instalar app).
+- **iPhone (Safari):** abre la URL → Compartir → **Agregar a inicio**. Ábrela desde el ícono; en iPhone las notificaciones solo funcionan con la app instalada (iOS 16.4+).
+
+Instalada, abre a pantalla completa y funciona sin conexión. Cuando hay una versión nueva, la app avisa con **Actualizar**.
+
+## Pasar tus datos entre la extensión y el celular
+
+1. En la extensión: **Ajustes → Respaldo → Exportar**. En el celular: **Ajustes → Respaldo → Compartir…** (o Descargar).
+2. Envía el archivo `cabe-todo-AAAA-MM-DD.json` al otro equipo (WhatsApp, correo, Drive…).
+3. En el otro lado: **Ajustes → Respaldo → Importar…**. Reemplaza todo lo que había; en el celular se guarda una copia para **Deshacer**.
 
 ## Desarrollo
 
@@ -91,7 +102,7 @@ Ver [PLAN.md](PLAN.md): decisiones, diferencias con la extensión y fases.
 | 2 | Diseño para celular | ✅ |
 | 3 | PWA instalable, sin conexión, avisos con la app abierta | ✅ |
 | 4 | Respaldo con el menú de compartir del celular | ✅ |
-| 5 | Versión 1.0.0 | ⏳ |
+| 5 | Versión 1.0.0 | ✅ |
 
 ## Privacidad
 

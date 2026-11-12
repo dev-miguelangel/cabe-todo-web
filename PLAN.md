@@ -106,9 +106,10 @@ Versión para el celular de [Cabe Todo](https://github.com/dev-miguelangel/cabe-
   - Probado en los dos sentidos: un respaldo de la extensión se importa en la web, y uno exportado por la web lo importa el código de la extensión.
 - **Listo cuando:** un respaldo de la extensión se importa en el celular y al revés sin perder campos, con una prueba de ida y vuelta en `tests/`.
 
-### Fase 5: publicar 1.0.0
+### Fase 5: publicar 1.0.0 ✅
 - README, versión 1.0.0 y release en GitHub.
 - Enlace a la versión web desde el README de la extensión.
+- **Hecho:** v1.0.0 con tag y release en GitHub; versión y enlaces al final de Ajustes; README con instalación y cómo pasar datos; enlace desde la extensión.
 
 ## Después del MVP (opcional)
 
