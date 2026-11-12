@@ -19,6 +19,8 @@ const SHARED_FILES = [
   // Estado, acciones y formato del respaldo. Dónde se guardan los datos es propio de cada proyecto
   // (src/services/storage-backend.js: chrome.storage en la extensión, IndexedDB aquí).
   'src/services/store.js', 'src/services/storage.js', 'src/services/casio.js',
+  // Elegir Mezclar / Reemplazar al importar (usa h, openModal y closeModal de utils/ui.js, iguales aquí)
+  'src/components/import-choice.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {

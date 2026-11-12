@@ -11,7 +11,7 @@ const DB_NAME = 'cabe-todo';
 const STORE = 'kv';
 const LS_PREFIX = 'cabetodo:';
 /** Claves de datos (en localStorage también hay preferencias de la interfaz, como la pestaña o el tema). */
-const DATA_KEYS = ['tasks', 'epics', 'routines', 'settings', 'meta'];
+const DATA_KEYS = ['tasks', 'epics', 'routines', 'settings', 'deleted', 'meta'];
 
 const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('cabe-todo-data') : null;
 channel?.unref?.(); // solo Node (pruebas): que el canal no mantenga vivo el proceso

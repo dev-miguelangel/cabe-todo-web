@@ -1,7 +1,7 @@
 // Respaldo en el celular: compartirlo (WhatsApp, correo, Drive…) o descargarlo, y deshacer una importación.
 // El archivo es el mismo de la extensión (exportBackup / readBackup de store.js): sirve en los dos sentidos.
 
-import { exportBackup, readBackup, restoreBackup } from './store.js';
+import { exportBackup, readBackup, restoreBackup, mergeBackup } from './store.js';
 import { getRaw, setRaw } from './storage-backend.js';
 import { todayISO } from '../utils/dates.js';
 
@@ -75,10 +75,15 @@ export async function undoPoint() {
   return undo?.backup ? { at: undo.at } : null;
 }
 
-/** Importa un respaldo ya leído (readBackup), guardando antes lo actual para poder deshacer. */
-export async function importBackup(backup) {
+/**
+ * Importa un respaldo ya leído (readBackup), guardando antes lo actual para poder deshacer.
+ * mode: 'merge' (mezclar; devuelve { added, updated, removed }) o 'replace'.
+ */
+export async function importBackup(backup, mode = 'replace') {
   await saveUndoPoint();
+  if (mode === 'merge') return mergeBackup(backup.data);
   restoreBackup(backup.data);
+  return null;
 }
 
 /** Vuelve a lo que había antes de la última importación. Devuelve el resumen restaurado o null. */

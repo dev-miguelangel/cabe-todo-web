@@ -24,7 +24,7 @@ Instalada, abre a pantalla completa y funciona sin conexión. Cuando hay una ver
 
 1. En la extensión: **Ajustes → Respaldo → Exportar**. En el celular: **Ajustes → Respaldo → Compartir…** (o Descargar).
 2. Envía el archivo `cabe-todo-AAAA-MM-DD.json` al otro equipo (WhatsApp, correo, Drive…).
-3. En el otro lado: **Ajustes → Respaldo → Importar…**. Reemplaza todo lo que había; en el celular se guarda una copia para **Deshacer**.
+3. En el otro lado: **Ajustes → Respaldo → Importar…** y elige **Mezclar** (suma lo del respaldo; en cada tarea queda la versión más reciente) o **Reemplazar todo**. En el celular se guarda una copia para **Deshacer**.
 
 ## Desarrollo
 

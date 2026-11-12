@@ -12,6 +12,8 @@ import { askNotificationPermission, notificationsAvailable } from '../services/r
 import {
   shareBackup, downloadBackup, canShareFiles, importBackup, undoImport, undoPoint, lastExportAt,
 } from '../services/backup-share.js';
+import { askImportMode } from '../components/import-choice.js';
+import { mergeSummaryText } from '../core/merge.js';
 
 const form = () => document.getElementById('prefs-form');
 
@@ -492,13 +494,12 @@ function setupBackup() {
       return;
     }
     const { tasks, epics } = backup.summary;
-    const ok = window.confirm(
-      `¿Reemplazar todo lo actual (${sizeOf(state.tasks.length, state.epics.length)}) `
-      + `por el respaldo (${sizeOf(tasks, epics)})?\n\nSe guarda una copia de lo actual: podrás deshacerlo desde Ajustes → Respaldo.`,
-    );
-    if (!ok) return;
-    await importBackup(backup);
-    showToast(`Respaldo restaurado: ${sizeOf(tasks, epics)}.`, { label: 'Deshacer', run: runUndoImport });
+    const mode = await askImportMode({ tasks: state.tasks.length, epics: state.epics.length }, backup.summary,
+      { note: 'Se guarda una copia para poder deshacer.' });
+    if (!mode) return;
+    const merged = await importBackup(backup, mode);
+    const text = mode === 'merge' ? `Respaldo mezclado: ${mergeSummaryText(merged)}.` : `Respaldo restaurado: ${sizeOf(tasks, epics)}.`;
+    showToast(text, { label: 'Deshacer', run: runUndoImport });
     renderBackupInfo();
   });
   document.getElementById('undo-import').addEventListener('click', () => {
