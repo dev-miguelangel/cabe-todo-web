@@ -1,0 +1,43 @@
+/* Mobile-first. Tokens claros por defecto; oscuros según el sistema. */
+:root {
+  color-scheme: light dark;
+  --bg: #f6f8f7; --card: #ffffff; --text: #17201b; --muted: #5b6660;
+  --border: #dfe5e1; --accent: #1db954; --accent-text: #138a3e; --field: #eef2ef;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1411; --card: #171d19; --text: #eef2ef; --muted: #9aa59f;
+    --border: #2a332d; --accent-text: #1db954; --field: #222a25;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100dvh; background: var(--bg); color: var(--text);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.shell {
+  max-width: 560px; margin: 0 auto;
+  padding: calc(24px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+           calc(24px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+h1 { font-size: 30px; line-height: 1.15; letter-spacing: -0.01em; margin: 32px 0 8px; }
+h1 em { font-style: normal; color: var(--accent-text); }
+.lead { color: var(--muted); margin: 0 0 20px; }
+.try input {
+  width: 100%; min-height: 48px; padding: 12px 14px;
+  font: inherit; font-size: 16px; /* 16 px: iPhone no hace zoom al enfocar */
+  color: var(--text); background: var(--field);
+  border: 2px solid transparent; border-radius: var(--radius); outline: none;
+}
+.try input:focus { border-color: var(--accent); }
+.try-out {
+  display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; margin: 16px 0 0;
+  padding: 16px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.try-out dt { color: var(--muted); font-size: 14px; }
+.try-out dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.foot { margin-top: 40px; color: var(--muted); font-size: 14px; }
+.foot a { color: var(--accent-text); }

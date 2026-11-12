@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cabe Todo</title>
+  <meta name="description" content="Planifica tu día en bloques y sabe a tiempo si te alcanza. Sin cuentas: tus datos quedan en tu celular.">
+  <meta name="theme-color" content="#1db954">
+  <link rel="icon" href="/icons/icon128.png">
+  <link rel="stylesheet" href="/src/styles/app.css">
+  <script type="module" src="/src/app.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="brand">
+      <img src="/icons/icon128.png" alt="" width="40" height="40">
+      <span>Cabe Todo</span>
+    </header>
+
+    <h1>¿Te <em>cabe todo</em> en el día?</h1>
+    <p class="lead">La versión para el celular está en construcción. Mientras tanto, prueba cómo se escriben las tareas:</p>
+
+    <form id="try" class="try" autocomplete="off">
+      <input id="try-input" type="text" enterkeyhint="done" aria-label="Escribe una tarea"
+             value="Informe 2h tarde #ventas" placeholder="Ej: Llamar a Juan 15m mañana">
+    </form>
+    <dl id="try-out" class="try-out" aria-live="polite"></dl>
+
+    <footer class="foot">
+      <span>v{{version}}</span> ·
+      <a href="https://github.com/dev-miguelangel/cabe-todo-web">Código</a> ·
+      <a href="https://dev-miguelangel.github.io/cabe-todo-ext/privacidad.html">Privacidad</a>
+    </footer>
+  </main>
+</body>
+</html>

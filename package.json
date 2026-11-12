@@ -1,0 +1,20 @@
+{
+  "name": "cabe-todo-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cabe Todo para el celular: planifica tu día en bloques y sabe si te alcanza. PWA sin servidor.",
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes serve@14.2.4 public -l 5173",
+    "build": "node scripts/build.mjs",
+    "preview": "npx --yes serve@14.2.4 dist -l 4173",
+    "sync": "node scripts/sync-core.mjs",
+    "test": "node scripts/sync-core.mjs --check && node tests/run.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
