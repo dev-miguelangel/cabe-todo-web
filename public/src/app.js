@@ -11,6 +11,7 @@ import { updateTimerChip } from './components/cards.js';
 import { setupThemeToggle, renderThemeToggle } from './components/theme-toggle.js';
 import { showToast, applyTheme } from './utils/ui.js';
 import { installTooltips } from './utils/tooltip.js';
+import { installKeyboardWatch } from './utils/mobile.js';
 import { TAB_IDS, normalizeTabOrder } from './core/tabs.js';
 
 const TAB_KEY = 'cabetodo:tab';
@@ -63,6 +64,7 @@ async function init() {
 
   setNotifier(showToast);
   installTooltips();
+  installKeyboardWatch();
   // Cambios propios: siempre re-render. Cambios de otra ventana: esperar si el usuario está editando o arrastrando.
   subscribe(({ external } = {}) => {
     if (external && isBusy()) return;
@@ -96,7 +98,8 @@ async function init() {
     });
   }, 5 * 1000);
 
-  if (state.tab === 'minimal') focusQuickAdd();
+  // Con mouse se escribe de inmediato; en el celular no: abriría el teclado sin que lo pidas
+  if (state.tab === 'minimal' && !matchMedia('(pointer: coarse)').matches) focusQuickAdd();
 }
 
 /** Foco en el campo de nueva tarea de la vista Hoy. */

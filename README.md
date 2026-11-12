@@ -60,8 +60,8 @@ cabe-todo-web/
 │       ├── core/           # copiado desde la extensión
 │       ├── services/       # store, storage, casio: copiados · storage-backend: IndexedDB (propio)
 │       ├── views/  components/   # portados desde la extensión
-│       ├── utils/          # dates, text, markdown, md-format: copiados · ui, tooltip, theme-boot: portados
-│       └── styles/         # app.css, doc.css, theme-trello.css
+│       ├── utils/          # dates, text, markdown, md-format: copiados · ui, tooltip, theme-boot: portados · mobile.js: teclado
+│       └── styles/         # app.css, doc.css, theme-trello.css: portados · mobile.css: propio del celular
 ├── scripts/
 │   ├── sync-core.mjs       # copia el código compartido
 │   └── build.mjs           # minifica public/ → dist/
@@ -85,7 +85,7 @@ Ver [PLAN.md](PLAN.md): decisiones, diferencias con la extensión y fases.
 | --- | --- | --- |
 | 0 | Repositorio, código compartido y despliegue en Vercel | ✅ |
 | 1 | Vistas de la extensión y datos en IndexedDB | ✅ |
-| 2 | Diseño para celular | ⏳ |
+| 2 | Diseño para celular | ✅ |
 | 3 | PWA instalable, sin conexión, avisos con la app abierta | ⏳ |
 | 4 | Respaldo con el menú de compartir del celular | ⏳ |
 | 5 | Versión 1.0.0 | ⏳ |

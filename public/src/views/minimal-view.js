@@ -286,8 +286,126 @@ function persistOrder(list) {
   applyOrder(lists);
 }
 
+/** Mueve la tarjeta arrastrada junto a `over` (otra tarjeta, la línea de un bloque o un bloque vacío). */
+function placeDragged(list, over, clientY) {
+  const dragged = list.querySelector(`.task[data-id="${CSS.escape(dragId)}"]`);
+  if (!dragged || !over || over === dragged || over.parentElement !== list) return;
+  if (over.classList.contains('block-divider')) {
+    // Sobre la línea de un bloque: al principio de ese bloque
+    over.after(dragged);
+  } else if (over.classList.contains('minimal-empty')) {
+    over.before(dragged);
+  } else if (over.classList.contains('task')) {
+    const box = over.getBoundingClientRect();
+    if (clientY < box.top + box.height / 2) over.before(dragged);
+    else over.after(dragged);
+  }
+  // Bloques que quedan vacíos / se llenan mientras se arrastra
+  list.querySelectorAll('.minimal-empty').forEach((empty) => {
+    const prev = empty.previousElementSibling;
+    empty.hidden = Boolean(prev && prev.classList.contains('task'));
+  });
+}
+
+// ---------- Arrastrar con el dedo (web): mantener presionada la tarjeta y moverla ----------
+// El drag & drop de HTML5 no funciona con pantallas táctiles. Mismo resultado: placeDragged + persistOrder.
+
+const LONG_PRESS_MS = 380;
+const MOVE_TOLERANCE = 10;   // px que el dedo puede moverse antes de que cuente como desplazar la página
+const EDGE = 72;             // px desde el borde (arriba / sobre el menú inferior) en que la página se desplaza sola
+
+function setupTouchDrag(list) {
+  let press = null;          // { li, x, y, timer } mientras se espera la pulsación larga
+  let active = null;         // la tarjeta que se arrastra
+  let point = { x: 0, y: 0 };
+  let raf = null;
+  let suppressClickUntil = 0;
+
+  const cancelPress = () => {
+    if (press) clearTimeout(press.timer);
+    press = null;
+  };
+
+  const autoScroll = () => {
+    if (!active) return;
+    const navTop = document.querySelector('.tabs')?.getBoundingClientRect().top ?? window.innerHeight;
+    let dy = 0;
+    if (point.y < EDGE) dy = -Math.ceil((EDGE - point.y) / 6);
+    else if (point.y > navTop - EDGE) dy = Math.ceil((point.y - (navTop - EDGE)) / 6);
+    if (dy) {
+      window.scrollBy(0, dy);
+      placeDragged(list, document.elementFromPoint(point.x, point.y)?.closest('li'), point.y);
+    }
+    raf = requestAnimationFrame(autoScroll);
+  };
+
+  const begin = (li) => {
+    press = null;
+    active = li;
+    dragId = li.dataset.id;
+    clearTimeout(clickTimer);
+    li.classList.add('touch-dragging');
+    list.classList.add('is-touch-dragging');
+    navigator.vibrate?.(12);
+    raf = requestAnimationFrame(autoScroll);
+  };
+
+  const finish = (save) => {
+    cancelPress();
+    if (!active) return;
+    cancelAnimationFrame(raf);
+    active.classList.remove('touch-dragging');
+    list.classList.remove('is-touch-dragging');
+    active = null;
+    dragId = null;
+    suppressClickUntil = Date.now() + 500; // el toque que termina el arrastre no abre el detalle
+    if (save) persistOrder(list); // guarda y re-renderiza
+    else renderMinimal();
+  };
+
+  list.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1 || active) {
+      cancelPress();
+      return;
+    }
+    const li = e.target.closest('.task');
+    if (!li || !li.draggable || e.target.closest('button, input, textarea, select, a')) return;
+    const t = e.touches[0];
+    point = { x: t.clientX, y: t.clientY };
+    press = { li, x: t.clientX, y: t.clientY, timer: setTimeout(() => begin(li), LONG_PRESS_MS) };
+  }, { passive: true });
+
+  list.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    if (!active) {
+      if (press && Math.hypot(t.clientX - press.x, t.clientY - press.y) > MOVE_TOLERANCE) cancelPress();
+      return;
+    }
+    e.preventDefault(); // arrastrando: la página no se desplaza con el dedo
+    point = { x: t.clientX, y: t.clientY };
+    placeDragged(list, document.elementFromPoint(point.x, point.y)?.closest('li'), point.y);
+  }, { passive: false });
+
+  list.addEventListener('touchend', () => finish(true));
+  list.addEventListener('touchcancel', () => finish(false));
+  // Pulsación larga: sin el menú del sistema (copiar, compartir…) sobre la tarjeta
+  list.addEventListener('contextmenu', (e) => {
+    if (press || active || e.target.closest('.task[draggable="true"]')) e.preventDefault();
+  });
+  list.addEventListener('click', (e) => {
+    if (Date.now() < suppressClickUntil) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+    }
+  }, true);
+}
+
 function setupDragAndDrop(list) {
   list.addEventListener('dragstart', (e) => {
+    if (document.querySelector('#minimal-list.is-touch-dragging')) { // Chrome Android también arrastra con HTML5
+      e.preventDefault();
+      return;
+    }
     const li = e.target.closest?.('.task');
     if (!li) return;
     dragId = li.dataset.id;
@@ -301,24 +419,7 @@ function setupDragAndDrop(list) {
     if (!dragId) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    const dragged = list.querySelector(`.task[data-id="${CSS.escape(dragId)}"]`);
-    const over = e.target.closest('li');
-    if (!dragged || !over || over === dragged || over.parentElement !== list) return;
-    if (over.classList.contains('block-divider')) {
-      // Sobre la línea de un bloque: al principio de ese bloque
-      over.after(dragged);
-    } else if (over.classList.contains('minimal-empty')) {
-      over.before(dragged);
-    } else if (over.classList.contains('task')) {
-      const box = over.getBoundingClientRect();
-      if (e.clientY < box.top + box.height / 2) over.before(dragged);
-      else over.after(dragged);
-    }
-    // Bloques que quedan vacíos / se llenan mientras se arrastra
-    list.querySelectorAll('.minimal-empty').forEach((empty) => {
-      const prev = empty.previousElementSibling;
-      empty.hidden = Boolean(prev && prev.classList.contains('task'));
-    });
+    placeDragged(list, e.target.closest('li'), e.clientY);
   });
   list.addEventListener('drop', (e) => {
     if (!dragId) return;
@@ -360,6 +461,7 @@ export function setupMinimal() {
 
   const list = document.getElementById('minimal-list');
   setupDragAndDrop(list);
+  setupTouchDrag(list);
   list.addEventListener('change', (e) => {
     if (e.target.matches('.task .check')) updateTask(e.target.closest('.task').dataset.id, { done: e.target.checked });
   });

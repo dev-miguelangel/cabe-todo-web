@@ -12,6 +12,7 @@ import { blockName } from './core/blocks.js';
 import { markdownEditor, markdownView } from './components/md-editor.js';
 import { setupThemeToggle, renderThemeToggle } from './components/theme-toggle.js';
 import { titleCase } from './utils/text.js';
+import { installKeyboardWatch } from './utils/mobile.js';
 import { fillTemplate, firstPlaceholder, defaultTemplate } from './core/templates.js';
 
 const SAVE_DELAY = 700;
@@ -294,4 +295,5 @@ async function init() {
   });
 }
 
+installKeyboardWatch();
 init();

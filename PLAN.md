@@ -67,12 +67,19 @@ Versión para el celular de [Cabe Todo](https://github.com/dev-miguelangel/cabe-
   - las pruebas pasan;
   - un respaldo de la extensión se importa y se ve igual.
 
-### Fase 2: diseño para celular
+### Fase 2: diseño para celular ✅
 - Botones de al menos 44 px.
 - Márgenes del notch (`env(safe-area-inset-*)`) y `100dvh`.
 - Campos con letra de 16 px, para que iPhone no haga zoom.
 - Teclado que no tape el campo de nueva tarea.
 - Arrastrar con el dedo (eventos de puntero) y tooltips al tocar.
+- **Hecho:**
+  - `styles/mobile.css`: capa propia cargada después de los estilos portados. Con el dedo (`pointer: coarse`) los toques son de al menos 40–44 px y los campos usan letra de 16 px; con mouse se mantiene el diseño compacto.
+  - Márgenes del notch, `100dvh` y modales que caben en la pantalla visible.
+  - Teclado (`utils/mobile.js`): al abrirse se oculta el menú inferior y el campo con foco se acomoda a la vista. En el celular no se enfoca solo el campo de nueva tarea (abriría el teclado).
+  - Arrastrar con el dedo: mantener presionada la tarjeta (380 ms), moverla y soltar; se desplaza sola cerca de los bordes. Un deslizamiento rápido sigue siendo desplazar la página.
+  - El ⇢ (mover) siempre visible en las tarjetas; tooltips al tocar, 2,5 s.
+- **Pendiente de probar en equipos reales:** el teclado (los navegadores sin interfaz no lo simulan) y el arrastre en iPhone.
 - **Listo cuando:** se usa cómodo con una mano en Android e iPhone.
 
 ### Fase 3: PWA instalable

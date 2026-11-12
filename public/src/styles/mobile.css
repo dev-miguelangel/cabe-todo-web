@@ -1,0 +1,102 @@
+/* Capa propia de la web para celulares. Se carga después de app.css (portado de la extensión), así
+   ese archivo queda casi igual al original y aquí está todo lo que cambia en un teléfono.
+
+   - Siempre: márgenes del notch, altura real de la pantalla, sin zoom por doble toque.
+   - Con dedo (pointer: coarse): toques de al menos 44 px y campos con letra de 16 px (iPhone hace
+     zoom al enfocar un campo con letra menor). Con mouse se mantiene el diseño compacto. */
+
+:root { --touch: 44px; --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); }
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  min-height: 100dvh;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: calc(var(--nav-h) + var(--safe-bottom));
+  overscroll-behavior-y: none;
+}
+button, a, input, select, textarea, summary, label { touch-action: manipulation; }
+.done-top { padding-top: calc(14px + var(--safe-top)); }
+.theme-toggle { top: calc(12px + var(--safe-top)); }
+
+/* Menú inferior por encima de la barra de inicio del iPhone */
+.tabs { height: calc(var(--nav-h) + var(--safe-bottom)); padding-bottom: var(--safe-bottom); }
+.toast { bottom: calc(var(--nav-h) + var(--safe-bottom) + 12px); }
+
+/* Con el teclado abierto (utils/mobile.js) el menú inferior sobra y tapa lo que se escribe */
+body.keyboard-open { padding-bottom: 0; }
+body.keyboard-open .tabs { display: none; }
+body.keyboard-open .toast { bottom: 12px; }
+
+/* Modales: caben en la pantalla visible (dvh) y respetan el notch */
+.modal { max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px); }
+.modal-box { max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px); overscroll-behavior: contain; }
+
+/* Arrastrar con el dedo (mantener presionada la tarjeta): la tarjeta "levantada" */
+.task.touch-dragging {
+  opacity: 0.95; pointer-events: none;
+  transform: scale(1.02); box-shadow: 0 10px 28px var(--shadow);
+  outline: 2px solid var(--accent); outline-offset: -2px;
+}
+#minimal-list.is-touch-dragging .task:not(.touch-dragging) { transition: transform 0.12s ease; }
+
+@media (pointer: coarse) {
+  /* ---------- Campos: 16 px para que iPhone no haga zoom ---------- */
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea { font-size: 16px !important; }
+  .quick-add input, .edit-input, .docs-search, .comment-input { min-height: var(--touch); }
+  .settings input:not([type="checkbox"]), .settings select, .epic-target input { min-height: 40px; }
+
+  /* ---------- Casillas: 22 px visibles, toque cómodo alrededor ---------- */
+  input[type="checkbox"] { width: 22px; height: 22px; }
+  input[type="checkbox"]::after { width: 10px; height: 5px; }
+  /* el área de toque crece sin mover el diseño (el ::before cuenta para el toque) */
+  input[type="checkbox"] { position: relative; }
+  input[type="checkbox"]::before { content: ""; position: absolute; inset: -11px; }
+  .task { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+  .task .edit-input { -webkit-user-select: text; user-select: text; }
+
+  /* ---------- Botones redondos e íconos: 44 px de toque ---------- */
+  .day-nav-btn, .modal-close, .tab-order-btn, .block-remove {
+    min-width: var(--touch); min-height: var(--touch);
+  }
+  .day-nav-btn { width: var(--touch); height: var(--touch); font-size: 26px; }
+  .day-nav .upcoming-btn, .round-btn, .info-btn, .theme-toggle { width: 40px; height: 40px; }
+  .modal-close { font-size: 28px; }
+
+  /* Botones de texto chicos (Editar, Renombrar, Exportar…): mismo aspecto, más área de toque */
+  .link-btn, .ghost.small, .primary.small, .danger-btn.small, .minimal-today, .ended-move, .upcoming-go,
+  #test-sound, #export-data, #import-data, .doc-link-btn, .suggest-btn {
+    position: relative; min-height: 40px;
+  }
+  .link-btn::after, .ended-move::after, .minimal-today::after, .upcoming-go::after {
+    content: ""; position: absolute; inset: -10px -4px;
+  }
+  .ghost.small, .primary.small, .danger-btn.small { padding-top: 8px; padding-bottom: 8px; font-size: 14px; }
+  .primary, .danger-btn { min-height: var(--touch); }
+  .doc-link-btn { min-height: var(--touch); }
+
+  /* Etiqueta de probabilidad y punto de avance: se tocan para ver su detalle */
+  .prob-tag[data-tip], .minimal-pct, .block-dot { position: relative; }
+  .prob-tag[data-tip]::after, .minimal-pct::after, .block-dot::after { content: ""; position: absolute; inset: -14px -8px; }
+
+  /* ---------- Tarjeta: el ⇢ (mover) siempre visible; con mouse aparece al pasar por encima ---------- */
+  .task .actions, [data-theme] .task .actions {
+    position: static; display: flex; align-self: center; margin: -8px -8px -8px auto;
+    padding: 0; background: none; box-shadow: none;
+  }
+  .task .actions button { min-width: var(--touch); min-height: var(--touch); font-size: 18px; }
+  .task.dragging .actions, .task.touch-dragging .actions { visibility: hidden; display: flex; }
+
+  /* Sin teclado físico: el atajo ⌘/Ctrl + Enter no aplica, y el foco al abrir un modal no se marca */
+  .comment-hint { display: none; }
+  .modal-close:focus-visible { outline: none; }
+
+  /* Barra de formato de la documentación */
+  .md-toolbar button { min-height: 40px; min-width: 40px; }
+
+  /* Menú inferior: etiquetas un poco más grandes */
+  .tab { font-size: 12px; }
+
+  /* Ajustes: filas de casilla con más aire para tocar */
+  .settings label.check-row { min-height: var(--touch); align-items: center; }
+}
