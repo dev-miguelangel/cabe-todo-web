@@ -1,6 +1,6 @@
 // Vista "Ajustes": bloques del día, duración por defecto, avisos y atajo de teclado.
 
-import { state, saveSettings, calibrationInfo, exportBackup, readBackup, restoreBackup, blockUsage } from '../services/store.js';
+import { state, saveSettings, calibrationInfo, readBackup, blockUsage } from '../services/store.js';
 import { showToast, h } from '../utils/ui.js';
 import { blocksOf, validateBlocks, nextFreeRange, neighborBlock, MAX_BLOCKS, MAX_TITLE, BLOCK_ICONS } from '../core/blocks.js';
 import { TAB_IDS, TAB_NAMES, normalizeTabOrder, moveTab } from '../core/tabs.js';
@@ -9,6 +9,9 @@ import { todayISO } from '../utils/dates.js';
 import { playCasio } from '../services/casio.js';
 import { installState, promptInstall, onInstallChange } from '../utils/pwa.js';
 import { askNotificationPermission, notificationsAvailable } from '../services/reminders.js';
+import {
+  shareBackup, downloadBackup, canShareFiles, importBackup, undoImport, undoPoint, lastExportAt,
+} from '../services/backup-share.js';
 
 const form = () => document.getElementById('prefs-form');
 
@@ -434,18 +437,45 @@ export function setupSettings() {
 const count = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 const sizeOf = (tasks, epics) => `${count(tasks, 'tarea')}, ${count(epics, 'épica')}`;
 
+/** "Último respaldo: hace 3 días" y "Deshacer la importación del …". */
+async function renderBackupInfo() {
+  const last = lastExportAt();
+  const lastEl = document.getElementById('backup-last');
+  if (last) {
+    const days = Math.floor((Date.now() - Date.parse(last)) / 86400000);
+    const when = days <= 0 ? 'hoy' : days === 1 ? 'ayer' : `hace ${days} días`;
+    lastEl.textContent = `Último respaldo desde este equipo: ${when}.`;
+  } else {
+    lastEl.textContent = 'Todavía no has hecho un respaldo desde este equipo.';
+  }
+  const undo = await undoPoint();
+  document.getElementById('undo-import-row').hidden = !undo;
+  if (undo) {
+    const d = new Date(undo.at);
+    const pad = (n) => String(n).padStart(2, '0');
+    document.getElementById('undo-import-text').textContent =
+      `Importaste un respaldo el ${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()} a las ${pad(d.getHours())}:${pad(d.getMinutes())}.`;
+  }
+}
+
+async function runUndoImport() {
+  const summary = await undoImport();
+  if (summary) showToast(`Listo: volviste a lo de antes (${sizeOf(summary.tasks, summary.epics)}).`);
+  renderBackupInfo();
+}
+
 function setupBackup() {
+  const share = document.getElementById('share-data');
+  share.hidden = !canShareFiles();
+  share.addEventListener('click', async () => {
+    const result = await shareBackup();
+    if (result === 'downloaded') showToast(`Respaldo descargado: ${sizeOf(state.tasks.length, state.epics.length)}.`);
+    renderBackupInfo();
+  });
   document.getElementById('export-data').addEventListener('click', () => {
-    const blob = new Blob([exportBackup()], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `cabe-todo-${todayISO()}.json`;
-    document.body.append(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadBackup();
     showToast(`Respaldo descargado: ${sizeOf(state.tasks.length, state.epics.length)}.`);
+    renderBackupInfo();
   });
 
   const file = document.getElementById('import-file');
@@ -464,10 +494,16 @@ function setupBackup() {
     const { tasks, epics } = backup.summary;
     const ok = window.confirm(
       `¿Reemplazar todo lo actual (${sizeOf(state.tasks.length, state.epics.length)}) `
-      + `por el respaldo (${sizeOf(tasks, epics)})?\n\nEsto no se puede deshacer: exporta primero si quieres conservar lo actual.`,
+      + `por el respaldo (${sizeOf(tasks, epics)})?\n\nSe guarda una copia de lo actual: podrás deshacerlo desde Ajustes → Respaldo.`,
     );
     if (!ok) return;
-    restoreBackup(backup.data);
-    showToast(`Respaldo restaurado: ${sizeOf(tasks, epics)}.`);
+    await importBackup(backup);
+    showToast(`Respaldo restaurado: ${sizeOf(tasks, epics)}.`, { label: 'Deshacer', run: runUndoImport });
+    renderBackupInfo();
   });
+  document.getElementById('undo-import').addEventListener('click', () => {
+    // eslint-disable-next-line no-alert
+    if (window.confirm('¿Volver a lo que tenías antes de importar? Se pierden los cambios hechos desde entonces.')) runUndoImport();
+  });
+  renderBackupInfo();
 }

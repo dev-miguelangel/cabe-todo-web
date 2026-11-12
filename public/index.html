@@ -239,15 +239,22 @@
     <details class="settings settings-section backup" data-section="backup">
         <summary>
           <span class="ss-head"><span class="ss-title">Respaldo</span><span class="ss-chevron" aria-hidden="true"></span></span>
-          <span class="ss-desc">Exporta o importa todos tus datos.</span>
+          <span class="ss-desc">Comparte tus datos con la extensión u otro equipo.</span>
         </summary>
       <div class="ss-body">
-        <p>Todo vive en este navegador. Descarga una copia de vez en cuando.</p>
+        <p>Todo vive en este celular. El respaldo es un archivo que sirve aquí y en la extensión de Chrome:
+          compártelo (WhatsApp, correo, Drive…) y en el otro lado elige <strong>Importar</strong>.</p>
         <div class="backup-actions">
-          <button type="button" class="ghost small" id="export-data">⤓ Exportar</button>
+          <button type="button" class="ghost small" id="share-data" hidden>⇪ Compartir…</button>
+          <button type="button" class="ghost small" id="export-data">⤓ Descargar</button>
           <button type="button" class="ghost small" id="import-data">⤒ Importar…</button>
           <input type="file" id="import-file" accept="application/json,.json" hidden>
         </div>
+        <p class="settings-note" id="backup-last"></p>
+        <p class="settings-note" id="undo-import-row" hidden>
+          <span id="undo-import-text"></span>
+          <button type="button" class="link-btn" id="undo-import">Deshacer</button>
+        </p>
       </div>
     </details>
 

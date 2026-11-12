@@ -96,9 +96,14 @@ Versión para el celular de [Cabe Todo](https://github.com/dev-miguelangel/cabe-
 - **Pendiente de probar en equipos reales:** instalar en Android e iPhone, notificaciones en iPhone (solo con la app instalada, iOS 16.4+) y el sonido de la alarma cuando la app no está a la vista.
 - **Listo cuando:** se instala en Android e iPhone, abre sin conexión y Lighthouse no marca errores de PWA.
 
-### Fase 4: compartir datos
+### Fase 4: compartir datos ✅
 - Exportar con el menú de compartir del celular (archivo JSON); si no se puede, descarga.
 - Importar desde un archivo, con confirmación ("Esto reemplaza tus N tareas…") y respaldo automático previo para deshacer.
+- **Hecho:**
+  - `services/backup-share.js`: **Compartir…** abre el menú de compartir del celular con el archivo (si el navegador no puede, lo descarga); **Descargar** y **Importar…** como antes.
+  - Antes de importar se guarda una copia de lo actual en IndexedDB: **Deshacer** en el aviso y en Ajustes → Respaldo ("Importaste un respaldo el … · Deshacer"), también después de recargar.
+  - Ajustes → Respaldo muestra cuándo fue el último respaldo desde ese equipo.
+  - Probado en los dos sentidos: un respaldo de la extensión se importa en la web, y uno exportado por la web lo importa el código de la extensión.
 - **Listo cuando:** un respaldo de la extensión se importa en el celular y al revés sin perder campos, con una prueba de ida y vuelta en `tests/`.
 
 ### Fase 5: publicar 1.0.0
@@ -107,6 +112,7 @@ Versión para el celular de [Cabe Todo](https://github.com/dev-miguelangel/cabe-
 
 ## Después del MVP (opcional)
 
+- **Abrir el respaldo directo desde WhatsApp o Drive** en Android ("Abrir con Cabe Todo"), con `share_target` en el manifest.
 - **Importar mezclando:** requiere agregar `updated_at` a tareas, épicas y rutinas en los dos proyectos.
 - **`core/` como paquete compartido** (npm o submódulo).
 - **Sincronización automática:** requiere un servidor y sale del enfoque "sin servidores".

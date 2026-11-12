@@ -9,7 +9,7 @@
 Sitio web **mobile-first** e **instalable (PWA)**, hecho con JavaScript, HTML y CSS, sin framework y sin servidor. Igual que la extensión:
 
 - **Funciona en local.** Tus datos quedan en tu celular: sin cuentas, sin servidores y sin analítica.
-- **Usa el mismo respaldo.** Lo que exportas en la extensión se importa aquí, y al revés.
+- **Usa el mismo respaldo.** Lo que exportas en la extensión se importa aquí, y al revés. En el celular, **Compartir…** lo envía por WhatsApp, correo o Drive, y al importar se guarda una copia de lo anterior para poder deshacer.
 
 **Producción:** https://cabe-todo-web.vercel.app
 
@@ -61,7 +61,7 @@ cabe-todo-web/
 │   └── src/
 │       ├── app.js  doc.js  # arranque de cada página
 │       ├── core/           # copiado desde la extensión
-│       ├── services/       # store, storage, casio: copiados · storage-backend (IndexedDB), reminders (avisos): propios
+│       ├── services/       # store, storage, casio: copiados · storage-backend (IndexedDB), reminders (avisos), backup-share (compartir y deshacer): propios
 │       ├── views/  components/   # portados desde la extensión
 │       ├── utils/          # dates, text, markdown, md-format: copiados · ui, tooltip, theme-boot: portados · mobile.js: teclado · pwa.js: service worker e instalación
 │       └── styles/         # app.css, doc.css, theme-trello.css: portados · mobile.css: propio del celular
@@ -90,7 +90,7 @@ Ver [PLAN.md](PLAN.md): decisiones, diferencias con la extensión y fases.
 | 1 | Vistas de la extensión y datos en IndexedDB | ✅ |
 | 2 | Diseño para celular | ✅ |
 | 3 | PWA instalable, sin conexión, avisos con la app abierta | ✅ |
-| 4 | Respaldo con el menú de compartir del celular | ⏳ |
+| 4 | Respaldo con el menú de compartir del celular | ✅ |
 | 5 | Versión 1.0.0 | ⏳ |
 
 ## Privacidad
