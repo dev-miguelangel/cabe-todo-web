@@ -114,7 +114,7 @@ Versión para el celular de [Cabe Todo](https://github.com/dev-miguelangel/cabe-
 ## Después del MVP (opcional)
 
 - **Abrir el respaldo directo desde WhatsApp o Drive** en Android ("Abrir con Cabe Todo"), con `share_target` en el manifest.
-- **Importar mezclando:** requiere agregar `updated_at` a tareas, épicas y rutinas en los dos proyectos.
+- **Sincronizar con Google Drive** (botón Sincronizar, solo para mí, mezclando datos): ver el [plan de sincronización](https://github.com/dev-miguelangel/cabe-todo-ext/blob/main/docs/plan-sincronizacion.md) en el repositorio de la extensión. Incluye importar mezclando.
 - **`core/` como paquete compartido** (npm o submódulo).
 - **Sincronización automática:** requiere un servidor y sale del enfoque "sin servidores".
 - **Dominio propio.**
