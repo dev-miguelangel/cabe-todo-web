@@ -8,7 +8,7 @@
 
 Sitio web **mobile-first** e **instalable (PWA)**, hecho con JavaScript, HTML y CSS, sin framework y sin servidor. Igual que la extensión:
 
-- **Funciona en local.** Tus datos quedan en tu celular: sin cuentas, sin servidores y sin analítica.
+- **Funciona en local.** Tus datos quedan en tu celular: sin cuentas propias, sin servidores y sin analítica. Si quieres, se sincronizan con un archivo privado de tu Google Drive.
 - **Usa el mismo respaldo.** Lo que exportas en la extensión se importa aquí, y al revés. En el celular, **Compartir…** lo envía por WhatsApp, correo o Drive, y al importar se guarda una copia de lo anterior para poder deshacer.
 
 **Ábrela en tu celular:** https://cabe-todo-web.vercel.app
