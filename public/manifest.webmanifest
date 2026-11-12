@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "Cabe Todo",
+  "short_name": "Cabe Todo",
+  "description": "Planifica tu día en bloques y sabe a tiempo si te alcanza. Sin cuentas: tus datos quedan en tu celular.",
+  "lang": "es",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#202124",
+  "theme_color": "#1db954",
+  "categories": ["productivity"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

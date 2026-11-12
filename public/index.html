@@ -6,6 +6,12 @@
   <meta name="description" content="Planifica tu día en bloques y sabe a tiempo si te alcanza. Sin cuentas: tus datos quedan en tu celular.">
   <meta name="theme-color" content="#1db954">
   <link rel="icon" href="/icons/icon128.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Cabe Todo">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Cabe Todo</title>
   <link rel="stylesheet" href="/src/styles/app.css">
   <link rel="stylesheet" href="/src/styles/theme-trello.css">
@@ -91,6 +97,31 @@
   <!-- ===== Ajustes ===== -->
   <div id="view-settings" hidden>
     <h1 class="view-title">Ajustes</h1>
+    <details class="settings settings-section install-section" data-section="install" id="install-section" hidden>
+      <summary>
+        <span class="ss-head"><span class="ss-title">Instalar la app</span><span class="ss-chevron" aria-hidden="true"></span></span>
+        <span class="ss-desc">Ábrela desde tu pantalla de inicio, también sin conexión.</span>
+      </summary>
+      <div class="ss-body">
+        <div id="install-prompt" hidden>
+          <p>Se instala como una app más: con su ícono, a pantalla completa y sin conexión.</p>
+          <button type="button" class="primary small" id="install-btn">Instalar Cabe Todo</button>
+        </div>
+        <div id="install-ios" hidden>
+          <p>En Safari:</p>
+          <ol class="install-steps">
+            <li>Toca <strong>Compartir</strong> <span aria-hidden="true">⎙</span> (abajo, o arriba en iPad).</li>
+            <li>Elige <strong>Agregar a inicio</strong>.</li>
+            <li>Toca <strong>Agregar</strong>.</li>
+          </ol>
+          <p class="settings-note">En iPhone los avisos solo funcionan con la app instalada (iOS 16.4 o superior).</p>
+        </div>
+        <div id="install-manual" hidden>
+          <p>Abre el menú del navegador y elige <strong>Instalar app</strong> o <strong>Agregar a la pantalla de inicio</strong>.</p>
+        </div>
+      </div>
+    </details>
+
     <details class="settings settings-section" data-section="blocks">
       <summary>
         <span class="ss-head"><span class="ss-title">Bloques del Día</span><span class="ss-chevron" aria-hidden="true"></span></span>
@@ -134,6 +165,7 @@
           <input type="checkbox" name="notify">
           Avisarme cuando termine cada bloque
         </label>
+        <p class="settings-note" id="notify-note"></p>
         <div class="row">
           <label class="row check-row">
             <input type="checkbox" name="timer-sound">

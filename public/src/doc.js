@@ -13,6 +13,7 @@ import { markdownEditor, markdownView } from './components/md-editor.js';
 import { setupThemeToggle, renderThemeToggle } from './components/theme-toggle.js';
 import { titleCase } from './utils/text.js';
 import { installKeyboardWatch } from './utils/mobile.js';
+import { installPwa } from './utils/pwa.js';
 import { fillTemplate, firstPlaceholder, defaultTemplate } from './core/templates.js';
 
 const SAVE_DELAY = 700;
@@ -296,4 +297,5 @@ async function init() {
 }
 
 installKeyboardWatch();
+installPwa();
 init();

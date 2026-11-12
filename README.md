@@ -24,8 +24,10 @@ npm install       # instala esbuild (solo para compilar)
 npm run dev       # sirve public/ en http://localhost:5173
 npm test          # revisa que el código compartido esté al día y corre las pruebas
 npm run build     # genera dist/ (lo que se publica)
-npm run preview   # sirve dist/ en http://localhost:4173
+npm run preview   # sirve dist/ en http://localhost:4173 (con service worker: sin conexión y actualizaciones)
 ```
+
+`npm run dev` no registra el service worker (la lista de archivos que guarda se genera al compilar). Para probar la PWA usa `npm run build && npm run preview`. Los íconos se regeneran con `python3 scripts/make_icons.py`.
 
 Para probar en el celular, abre la URL de vista previa que Vercel crea en cada pull request. También puedes usar la IP de tu computador en la red local (`http://192.168.x.x:5173`). Sin HTTPS no se puede instalar como PWA, pero sirve para revisar el diseño.
 
@@ -54,13 +56,14 @@ cabe-todo-web/
 ├── public/                 # lo que se publica
 │   ├── index.html          # la app: Hoy, Épicas, Hechas, Rutinas, Docs y Ajustes
 │   ├── doc.html            # documentación de una tarea (?task=…)
+│   ├── manifest.webmanifest  sw.js   # PWA: instalación y sin conexión
 │   ├── icons/
 │   └── src/
 │       ├── app.js  doc.js  # arranque de cada página
 │       ├── core/           # copiado desde la extensión
-│       ├── services/       # store, storage, casio: copiados · storage-backend: IndexedDB (propio)
+│       ├── services/       # store, storage, casio: copiados · storage-backend (IndexedDB), reminders (avisos): propios
 │       ├── views/  components/   # portados desde la extensión
-│       ├── utils/          # dates, text, markdown, md-format: copiados · ui, tooltip, theme-boot: portados · mobile.js: teclado
+│       ├── utils/          # dates, text, markdown, md-format: copiados · ui, tooltip, theme-boot: portados · mobile.js: teclado · pwa.js: service worker e instalación
 │       └── styles/         # app.css, doc.css, theme-trello.css: portados · mobile.css: propio del celular
 ├── scripts/
 │   ├── sync-core.mjs       # copia el código compartido
@@ -86,7 +89,7 @@ Ver [PLAN.md](PLAN.md): decisiones, diferencias con la extensión y fases.
 | 0 | Repositorio, código compartido y despliegue en Vercel | ✅ |
 | 1 | Vistas de la extensión y datos en IndexedDB | ✅ |
 | 2 | Diseño para celular | ✅ |
-| 3 | PWA instalable, sin conexión, avisos con la app abierta | ⏳ |
+| 3 | PWA instalable, sin conexión, avisos con la app abierta | ✅ |
 | 4 | Respaldo con el menú de compartir del celular | ⏳ |
 | 5 | Versión 1.0.0 | ⏳ |
 

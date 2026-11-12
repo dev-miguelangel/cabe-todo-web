@@ -82,11 +82,18 @@ Versión para el celular de [Cabe Todo](https://github.com/dev-miguelangel/cabe-
 - **Pendiente de probar en equipos reales:** el teclado (los navegadores sin interfaz no lo simulan) y el arrastre en iPhone.
 - **Listo cuando:** se usa cómodo con una mano en Android e iPhone.
 
-### Fase 3: PWA instalable
+### Fase 3: PWA instalable ✅
 - `manifest.webmanifest`: nombre, `display: standalone`, `theme_color #1db954`, íconos 192, 512, 512 maskable y `apple-touch-icon` 180.
 - Service worker que guarda la app para usarla sin conexión, con versión de caché y aviso de "nueva versión disponible".
 - Botón "Instalar" en Android (`beforeinstallprompt`) e instrucciones para iPhone (Compartir → Agregar a inicio).
 - Avisos y sonido del temporizador con la app abierta.
+- **Hecho:**
+  - `manifest.webmanifest` e íconos 192, 512, maskable y `apple-touch-icon` (`scripts/make_icons.py`). Chrome no reporta errores de instalación.
+  - `sw.js`: `build.mjs` le escribe la lista de archivos y una versión con hash de su contenido. Responde desde la caché: Hoy y la documentación abren sin conexión.
+  - Versión nueva: aviso "Hay una versión nueva · Actualizar"; al aceptar recarga con la nueva y borra la caché anterior, sin tocar los datos.
+  - Ajustes → **Instalar la app**: botón en Android/Chrome (`beforeinstallprompt`) e instrucciones de Safari en iPhone. Se oculta con la app instalada.
+  - `services/reminders.js`: fin de bloque, temporizador en cero (con sonido), inicio de reunión (la que bloquea inicia su temporizador) y fin de reunión (queda hecha). Con la app a la vista, aviso dentro de la app; en segundo plano, notificación del sistema si se dio permiso (botón en Ajustes → Preferencias).
+- **Pendiente de probar en equipos reales:** instalar en Android e iPhone, notificaciones en iPhone (solo con la app instalada, iOS 16.4+) y el sonido de la alarma cuando la app no está a la vista.
 - **Listo cuando:** se instala en Android e iPhone, abre sin conexión y Lighthouse no marca errores de PWA.
 
 ### Fase 4: compartir datos

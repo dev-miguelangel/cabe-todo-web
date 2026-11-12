@@ -1,6 +1,7 @@
 // Genera dist/ para publicar: copia public/, minifica JS y CSS con esbuild y compacta el HTML.
 // Vercel lo corre en cada despliegue (ver vercel.json). Uso local: npm run build
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, rmSync, cpSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,6 +37,21 @@ for (const f of files.filter((x) => extname(x) === '.html')) {
     .trim());
 }
 
+// Service worker: lista de archivos a guardar y versión (cambia con cualquier archivo → la app se entera)
+const swPath = join(dist, 'sw.js');
+const published = walk(dist).filter((f) => f !== swPath && !f.endsWith('.DS_Store')).sort();
+const hash = createHash('sha256');
+for (const f of published) hash.update(relative(dist, f)).update(readFileSync(f));
+const version = `${pkg.version}-${hash.digest('hex').slice(0, 8)}`;
+const urlOf = (f) => {
+  const rel = '/' + relative(dist, f).split('\\').join('/');
+  if (rel === '/index.html') return '/';
+  return rel.endsWith('.html') ? rel.slice(0, -5) : rel; // /doc.html → /doc (cleanUrls)
+};
+writeFileSync(swPath, readFileSync(swPath, 'utf8')
+  .replace(/["']__VERSION__["']/, JSON.stringify(version))
+  .replace('__PRECACHE__', JSON.stringify(published.map(urlOf))));
+
 const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
 const size = (d) => walk(d).reduce((n, f) => n + statSync(f).size, 0);
-console.log(`✓ dist/ v${pkg.version}: ${kb(size(dist))} (public/: ${kb(size(pub))})`);
+console.log(`✓ dist/ v${pkg.version}: ${kb(size(dist))} (public/: ${kb(size(pub))}) · service worker ${version}, ${published.length} archivos`);

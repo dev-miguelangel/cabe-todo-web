@@ -1,6 +1,8 @@
 // Punto de entrada del side panel: carga datos, conecta las vistas y las pestañas.
 
-import { state, initStore, subscribe, setNotifier, setView, ensureRoutines, findTask } from './services/store.js';
+import {
+  state, initStore, subscribe, setNotifier, setView, ensureRoutines, findTask, startTimer, finishMeeting,
+} from './services/store.js';
 import { renderEpics, setupEpics, isEpicsBusy } from './views/epics-view.js';
 import { renderSettings, setupSettings } from './views/settings-view.js';
 import { renderDocs, setupDocs } from './views/docs-view.js';
@@ -12,6 +14,9 @@ import { setupThemeToggle, renderThemeToggle } from './components/theme-toggle.j
 import { showToast, applyTheme } from './utils/ui.js';
 import { installTooltips } from './utils/tooltip.js';
 import { installKeyboardWatch } from './utils/mobile.js';
+import { installPwa } from './utils/pwa.js';
+import { startReminders } from './services/reminders.js';
+import { playCasio } from './services/casio.js';
 import { TAB_IDS, normalizeTabOrder } from './core/tabs.js';
 
 const TAB_KEY = 'cabetodo:tab';
@@ -65,6 +70,7 @@ async function init() {
   setNotifier(showToast);
   installTooltips();
   installKeyboardWatch();
+  installPwa();
   // Cambios propios: siempre re-render. Cambios de otra ventana: esperar si el usuario está editando o arrastrando.
   subscribe(({ external } = {}) => {
     if (external && isBusy()) return;
@@ -81,6 +87,10 @@ async function init() {
   setupSettings();
   setupKeyboard();
   ensureRoutines(); // tareas que se repiten y tocan hoy
+  // Avisos de fin de bloque, temporizador en cero y reuniones (con la app abierta)
+  startReminders({
+    getState: () => state, showToast, playSound: () => playCasio().catch(() => {}), startTimer, finishMeeting,
+  });
   render();
 
   // El pronóstico depende de la hora: se recalcula cada minuto.

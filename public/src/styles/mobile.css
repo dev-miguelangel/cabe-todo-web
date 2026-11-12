@@ -100,3 +100,7 @@ body.keyboard-open .toast { bottom: 12px; }
   /* Ajustes: filas de casilla con más aire para tocar */
   .settings label.check-row { min-height: var(--touch); align-items: center; }
 }
+
+/* Ajustes → Instalar la app */
+.install-steps { margin: 4px 0 8px; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.install-section .ss-body p { margin: 0 0 8px; }

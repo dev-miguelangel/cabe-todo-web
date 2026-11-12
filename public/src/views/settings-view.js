@@ -7,6 +7,8 @@ import { TAB_IDS, TAB_NAMES, normalizeTabOrder, moveTab } from '../core/tabs.js'
 import { validateTemplates, MAX_TEMPLATES } from '../core/templates.js';
 import { todayISO } from '../utils/dates.js';
 import { playCasio } from '../services/casio.js';
+import { installState, promptInstall, onInstallChange } from '../utils/pwa.js';
+import { askNotificationPermission, notificationsAvailable } from '../services/reminders.js';
 
 const form = () => document.getElementById('prefs-form');
 
@@ -300,6 +302,53 @@ function renderBlocksSummary() {
   el.title = blocks.map((b) => `${b.icon} ${b.title}: ${b.start}–${b.end}`).join('\n');
 }
 
+// ---------- Web: instalar la app y permiso de notificaciones ----------
+
+function renderInstall() {
+  const how = installState();
+  document.getElementById('install-section').hidden = how === 'installed';
+  document.getElementById('install-prompt').hidden = how !== 'prompt';
+  document.getElementById('install-ios').hidden = how !== 'ios';
+  document.getElementById('install-manual').hidden = how !== 'manual';
+}
+
+/** Explica cómo llegan los avisos según el permiso del navegador (y ofrece pedirlo). */
+function renderNotifyNote(on) {
+  const note = document.getElementById('notify-note');
+  const permission = notificationsAvailable() ? Notification.permission : 'unsupported';
+  const parts = [];
+  if (on) {
+    if (permission === 'granted') parts.push('Llegan mientras la app está abierta, aunque estés en otra.');
+    else if (permission === 'denied') parts.push('El navegador bloqueó las notificaciones: los avisos se ven dentro de la app. Puedes permitirlas en los ajustes del sitio.');
+    else if (permission === 'unsupported') parts.push('Los avisos se ven dentro de la app mientras está abierta.');
+    else {
+      parts.push('Se ven dentro de la app mientras está abierta. ');
+      parts.push(h('button', { type: 'button', class: 'link-btn', id: 'notify-permission' }, 'Recibirlos también como notificación'));
+    }
+  }
+  note.replaceChildren(...parts);
+  note.hidden = !parts.length;
+}
+
+function setupWebExtras(f) {
+  renderInstall();
+  onInstallChange(renderInstall);
+  document.getElementById('install-btn').addEventListener('click', async () => {
+    if (await promptInstall()) showToast('Instalando Cabe Todo…');
+  });
+  // Pedir permiso de notificaciones al marcar la casilla (tiene que ser con un toque)
+  f.elements.notify.addEventListener('change', async () => {
+    if (f.elements.notify.checked) await askNotificationPermission();
+    renderNotifyNote(f.elements.notify.checked);
+  });
+  document.getElementById('notify-note').addEventListener('click', async (e) => {
+    if (!e.target.closest('#notify-permission')) return;
+    const result = await askNotificationPermission();
+    if (result === 'granted') showToast('Listo: los avisos llegarán también como notificación.');
+    renderNotifyNote(f.elements.notify.checked);
+  });
+}
+
 export function renderSettings() {
   renderTabOrderList();
   renderTemplates();
@@ -313,6 +362,7 @@ export function renderSettings() {
   f.elements['default-minutes'].value = String(s.default_minutes);
   f.elements.theme.value = s.theme || 'chrome';
   f.elements.notify.checked = Boolean(s.notify);
+  renderNotifyNote(Boolean(s.notify));
   f.elements['timer-sound'].checked = s.timer_sound !== false;
   f.elements.calibrate.checked = s.calibrate !== false;
   document.getElementById('calibration-info').textContent = calibrationText(calibrationInfo);
@@ -373,6 +423,7 @@ export function setupSettings() {
   });
 
   document.getElementById('test-sound').addEventListener('click', () => playCasio());
+  setupWebExtras(f);
   setupBackup();
   setupTabOrder();
   setupTemplates();

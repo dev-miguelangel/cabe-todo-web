@@ -70,3 +70,32 @@ const mod = (p) => import(pathToFileURL(join(root, 'public', p)).href);
   assert.deepEqual([t.title, t.minutes, t.block], ['Informe', 120, 'pm']);
   console.log('OK: store compartido con el almacenamiento web');
 }
+
+// ---------- Avisos con la app abierta: qué toca entre dos momentos ----------
+{
+  const { dueReminders, blockEndText } = await mod('src/services/reminders.js');
+  const { DEFAULT_BLOCKS } = await mod('src/core/blocks.js');
+  const settings = { blocks: DEFAULT_BLOCKS, notify: true };
+  const ms = (h, m = 0) => new Date(2026, 10, 12, h, m).getTime();
+  const iso = (h, m = 0) => new Date(ms(h, m)).toISOString();
+  const base = { date: '2026-11-12', done: false, dependencies: [], time_entries: [], meeting: null };
+  const tasks = [
+    { ...base, id: 'a', title: 'Informe', block: 'am', minutes: 60 },
+    { ...base, id: 'b', title: 'Correos', block: 'am', minutes: 20, done: true },
+    // Corre desde las 12:30 con 30 min estimados: llega a cero a las 13:00
+    { ...base, id: 'c', title: 'Llamar', block: 'pm', minutes: 30, time_entries: [{ start: iso(12, 30), end: null }] },
+    { ...base, id: 'm', title: 'Daily', block: 'am', minutes: 15, meeting: { start: '09:30', end: '09:45', blocking: true } },
+  ];
+  const at = (from, to) => dueReminders({ tasks, settings }, from, to).map((e) => `${e.type}:${e.block?.id || e.task.id}`);
+  assert.deepEqual(at(ms(12, 59), ms(13, 0, 5)), ['block-end:am', 'timer-zero:c'], 'fin de Mañana y temporizador en cero');
+  assert.deepEqual(at(ms(13, 1), ms(13, 2)), [], 'después ya no se repite');
+  assert.deepEqual(at(ms(9, 29), ms(9, 31)), ['meeting-start:m']);
+  assert.deepEqual(at(ms(18, 59), ms(19, 0)), ['block-end:pm'], 'fin de Tarde (tiene "Llamar")');
+  assert.deepEqual(dueReminders({ tasks: tasks.filter((t) => t.block !== 'pm'), settings }, ms(18, 59), ms(19, 0)), [], 'bloque sin tareas: sin aviso');
+  const end = dueReminders({ tasks, settings }, ms(12, 59), ms(13, 0))[0];
+  assert.deepEqual(blockEndText(end), { title: 'Terminó ☀︎ Mañana', body: 'Te quedan 2 tareas: Informe, Daily' });
+  // Reunión en curso que llega a su fin
+  const running = tasks.map((t) => (t.id === 'm' ? { ...t, time_entries: [{ start: iso(9, 30), end: null }] } : t));
+  assert.deepEqual(dueReminders({ tasks: running, settings }, ms(9, 44), ms(9, 45)).map((e) => e.type), ['meeting-end']);
+  console.log('OK: avisos (fin de bloque, temporizador, reuniones)');
+}
