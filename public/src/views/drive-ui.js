@@ -1,10 +1,13 @@
+// ⚠ Copiado desde cabe-todo-ext con scripts/sync-core.mjs. No editar aquí.
 // Sincronizar con Google Drive: Ajustes → "Sincronizar con Google Drive" y el botón ⟳ de Hoy.
+// Compartido con la versión web (scripts/sync-core.mjs). El permiso de Google lo maneja drive-session.js,
+// propio de cada app.
 
 import { state, exportBackup, readBackup, mergeBackup } from '../services/store.js';
-import { saveUndoPoint, undoImport } from '../services/backup-share.js';
+import { saveUndoPoint, undoImport } from '../services/undo-point.js';
 import {
-  syncNow, isConnected, lastSync, disconnect, loadGoogle,
-} from '../services/drive-sync.js';
+  syncNow, isConnected, lastSync, disconnect, prepare, isAvailable, redirectUrl,
+} from '../services/drive-session.js';
 import { mergeSummaryText } from '../core/merge.js';
 import { showToast } from '../utils/ui.js';
 
@@ -29,7 +32,14 @@ function whenText(iso) {
 }
 
 export function renderDrive() {
+  if (!isAvailable()) {
+    document.getElementById('drive-section').hidden = true;
+    document.getElementById('drive-sync-btn').hidden = true;
+    return;
+  }
   const on = isConnected();
+  const setup = document.getElementById('drive-setup');
+  if (setup) setup.textContent = redirectUrl();
   document.getElementById('drive-off').hidden = on;
   document.getElementById('drive-on').hidden = !on;
   document.getElementById('drive-sync-btn').hidden = !on;
@@ -67,17 +77,17 @@ function startSync() {
 
 export function setupDrive() {
   // La librería de Google se carga antes del toque: así la ventanita de Google no queda bloqueada
-  if (isConnected()) loadGoogle().catch(() => {});
+  if (isConnected()) prepare().catch(() => {});
   document.getElementById('drive-section').addEventListener('toggle', (e) => {
-    if (e.target.open) loadGoogle().catch((err) => showToast(err.message));
+    if (e.target.open) prepare().catch((err) => showToast(err.message));
   });
   document.getElementById('drive-connect').addEventListener('click', startSync);
   document.getElementById('drive-sync').addEventListener('click', startSync);
   document.getElementById('drive-sync-btn').addEventListener('click', startSync);
-  document.getElementById('drive-disconnect').addEventListener('click', () => {
+  document.getElementById('drive-disconnect').addEventListener('click', async () => {
     // eslint-disable-next-line no-alert
     if (!window.confirm('¿Desconectar Google Drive en este equipo? Tus datos se quedan aquí y el archivo en tu Drive no se borra.')) return;
-    disconnect();
+    await disconnect();
     showToast('Google Drive desconectado en este equipo.');
     renderDrive();
   });

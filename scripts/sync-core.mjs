@@ -21,6 +21,9 @@ const SHARED_FILES = [
   'src/services/store.js', 'src/services/storage.js', 'src/services/casio.js',
   // Elegir Mezclar / Reemplazar al importar (usa h, openModal y closeModal de utils/ui.js, iguales aquí)
   'src/components/import-choice.js',
+  // Google Drive: la API, la secuencia de sincronizar, Deshacer y la interfaz. El permiso de Google
+  // (src/services/drive-session.js) es propio de cada proyecto.
+  'src/services/drive-api.js', 'src/services/undo-point.js', 'src/views/drive-ui.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {

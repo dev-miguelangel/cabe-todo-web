@@ -102,7 +102,7 @@ const mod = (p) => import(pathToFileURL(join(root, 'public', p)).href);
 
 // ---------- Sincronizar con Drive: la secuencia, con un Drive de mentira ----------
 {
-  const { runSync } = await mod('src/services/drive-sync.js');
+  const { runSync } = await mod('src/services/drive-api.js');
   const S = await mod('src/services/store.js');
   const fakeDrive = (initial = null) => {
     const d = { file: initial, version: 0, uploads: 0, bumpOnce: false };
