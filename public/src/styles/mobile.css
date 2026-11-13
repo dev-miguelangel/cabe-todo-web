@@ -144,3 +144,19 @@ body.keyboard-open .toast { bottom: 12px; }
   .theme-toggle { width: 36px; height: 36px; }
   #minimal-day { font-size: 19px; }
 }
+
+/* Mover (cuadrícula) y Pendientes con el dedo */
+@media (pointer: coarse) {
+  .move-slot { min-height: 40px; font-size: 13.5px; }
+  .move-day strong { font-size: 14px; }
+  .pick-move { min-width: var(--touch); min-height: var(--touch); }
+  .modal-back { min-height: 36px; }
+}
+
+/* Vista Tareas con el dedo */
+@media (pointer: coarse) {
+  .tasks-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+  .tasks-filters::-webkit-scrollbar { display: none; }
+  .tasks-filter { flex: none; min-height: 36px; padding: 6px 11px; font-size: 13.5px; }
+  .tasks-search { min-height: var(--touch); }
+}

@@ -24,6 +24,10 @@ const SHARED_FILES = [
   // Google Drive: la API, la secuencia de sincronizar, Deshacer y la interfaz. El permiso de Google
   // (src/services/drive-session.js) es propio de cada proyecto.
   'src/services/drive-api.js', 'src/services/undo-point.js', 'src/views/drive-ui.js',
+  // Mover (cuadrícula día × bloque) y Pendientes: iguales en las dos apps
+  'src/components/move-menu.js', 'src/components/backlog-picker.js',
+  // Vista Tareas (pestaña ✓): igual en las dos apps
+  'src/views/done-view.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {
