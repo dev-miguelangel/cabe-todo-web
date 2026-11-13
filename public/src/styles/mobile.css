@@ -76,8 +76,10 @@ body.keyboard-open .toast { bottom: 12px; }
   .doc-link-btn { min-height: var(--touch); }
 
   /* Etiqueta de probabilidad y punto de avance: se tocan para ver su detalle */
-  .prob-tag[data-tip], .minimal-pct, .block-dot { position: relative; }
-  .prob-tag[data-tip]::after, .minimal-pct::after, .block-dot::after { content: ""; position: absolute; inset: -14px -8px; }
+  .prob-tag[data-tip], .minimal-pct { position: relative; }
+  .prob-tag[data-tip]::after, .minimal-pct::after { content: ""; position: absolute; inset: -14px -8px; }
+  /* El punto ya va en position: absolute sobre la línea (no cambiarlo): solo se agranda su área de toque */
+  .block-dot::after { inset: -16px; }
 
   /* ---------- Tarjeta: el ⇢ (mover) siempre visible; con mouse aparece al pasar por encima ---------- */
   .task .actions, [data-theme] .task .actions {
@@ -128,4 +130,17 @@ body.keyboard-open .toast { bottom: 12px; }
   .task .actions .edit-btn { display: none; }
   .modal-title-input { font-size: 16px !important; min-height: var(--touch); }
   .modal-title-pencil { font-size: 0.85em; }
+}
+
+/* ⟳ sin Drive conectado: amarillo, para invitar a conectarlo */
+.sync-btn.sync-off { background: #f6c344; color: #202124; }
+.sync-btn.sync-off:hover { background: #f9d36b; color: #202124; }
+
+/* Hoy en el celular: tres botones redondos (calendario, ⟳ y tema) sin cortar la fecha */
+@media (pointer: coarse) {
+  .day-nav { gap: 0; }
+  .day-nav-btn { width: 34px; min-width: 34px; font-size: 24px; }
+  .day-nav .upcoming-btn, .day-nav .sync-btn { width: 36px; height: 36px; margin-left: 4px; }
+  .theme-toggle { width: 36px; height: 36px; }
+  #minimal-day { font-size: 19px; }
 }
