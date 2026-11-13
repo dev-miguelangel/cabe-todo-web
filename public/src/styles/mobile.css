@@ -122,3 +122,10 @@ body.keyboard-open .toast { bottom: 12px; }
 @keyframes drive-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .sync-btn.is-busy svg { animation: none; } }
 .drive-section .ss-body p { margin: 0 0 8px; }
+
+/* Editar la tarea en el celular: tocando el título del detalle (sin ✎ extra en la tarjeta) */
+@media (pointer: coarse) {
+  .task .actions .edit-btn { display: none; }
+  .modal-title-input { font-size: 16px !important; min-height: var(--touch); }
+  .modal-title-pencil { font-size: 0.85em; }
+}
