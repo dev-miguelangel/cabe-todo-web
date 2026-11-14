@@ -20,7 +20,6 @@ import { playCasio } from './services/casio.js';
 import { setupDrive, renderDrive } from './views/drive-ui.js';
 import { TAB_IDS, normalizeTabOrder } from './core/tabs.js';
 
-const TAB_KEY = 'cabetodo:tab';
 const TABS = TAB_IDS;
 const VIEWS = {
   minimal: renderMinimal, epics: renderEpics, done: renderDone, routines: renderRoutines, docs: renderDocs, settings: renderSettings,
@@ -56,7 +55,6 @@ function render() {
 function setupTabs() {
   document.querySelectorAll('.tab').forEach((btn) => {
     btn.addEventListener('click', () => {
-      try { localStorage.setItem(TAB_KEY, btn.dataset.tab); } catch { /* ignorar */ }
       setView({ tab: btn.dataset.tab });
     });
   });
@@ -64,10 +62,9 @@ function setupTabs() {
 
 async function init() {
   await initStore();
-  try {
-    const saved = localStorage.getItem(TAB_KEY);
-    if (TABS.includes(saved)) state.tab = saved;
-  } catch { /* sin almacenamiento */ }
+  // Siempre se entra a Hoy (no se recuerda la última pestaña)
+  state.tab = 'minimal';
+  try { localStorage.removeItem('cabetodo:tab'); } catch { /* sin almacenamiento */ }
 
   setNotifier(showToast);
   installTooltips();
