@@ -28,6 +28,8 @@ const SHARED_FILES = [
   'src/components/move-menu.js', 'src/components/backlog-picker.js',
   // Vista Tareas (pestaña ✓): igual en las dos apps
   'src/views/done-view.js',
+  // Ejemplos en el campo "+ Nueva tarea"
+  'src/components/quick-add-hints.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {
