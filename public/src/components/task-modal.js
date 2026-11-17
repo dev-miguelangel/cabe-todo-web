@@ -426,6 +426,11 @@ export function openDocTab(taskId) {
   location.href = `/doc.html?task=${encodeURIComponent(taskId)}`;
 }
 
+/** Abre la documentación de una épica en la misma ventana. */
+export function openEpicDoc(epicId) {
+  location.href = `/doc.html?epic=${encodeURIComponent(epicId)}`;
+}
+
 // ---------- Render ----------
 
 // ---------- Editar: el título del detalle se toca y se escribe como en "+ Nueva tarea" ----------

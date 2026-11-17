@@ -32,6 +32,8 @@ const SHARED_FILES = [
   'src/components/quick-add-hints.js',
   // Épicas (con su valor hora y orden arrastrando): igual en las dos apps
   'src/views/epics-view.js', 'src/utils/drag-sort.js',
+  // Editor Markdown (casillas que se marcan en Lectura) y vista Docs (con épicas)
+  'src/components/md-editor.js', 'src/views/docs-view.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {
