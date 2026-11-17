@@ -20,6 +20,10 @@ Sitio web **mobile-first** e **instalable (PWA)**, hecho con JavaScript, HTML y 
 
 Instalada, abre a pantalla completa y funciona sin conexión. Cuando hay una versión nueva, la app avisa con **Actualizar**.
 
+## Costo por épica
+
+En cada épica (Épicas → abrirla) puedes poner un **valor hora** y su **moneda**. La épica muestra lo trabajado, lo pendiente y el total; el detalle de cada tarea, su costo. Es opcional: sin valor hora no aparece nada.
+
 ## Sincronizar con Google Drive
 
 **Ajustes → Sincronizar con Google Drive → Conectar**. Guarda tus datos en un archivo privado de tu Drive (`Cabe Todo/cabe-todo-sync.json`); después, **Sincronizar ahora** (o el botón ⟳ de Hoy) lo trae, lo mezcla con lo local y sube el resultado. La app solo puede ver ese archivo (permiso `drive.file`). Ver el [plan de sincronización](https://github.com/dev-miguelangel/cabe-todo-ext/blob/main/docs/plan-sincronizacion.md).

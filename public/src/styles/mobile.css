@@ -160,3 +160,15 @@ body.keyboard-open .toast { bottom: 12px; }
   .tasks-filter { flex: none; min-height: 36px; padding: 6px 11px; font-size: 13.5px; }
   .tasks-search { min-height: var(--touch); }
 }
+
+/* Valor hora de la épica con el dedo */
+@media (pointer: coarse) {
+  .epic-rate-input { width: 110px; min-height: 40px; }
+  .epic-rate select { min-height: 40px; }
+}
+
+/* Manija ⠿ de las épicas con el dedo: más grande y siempre visible */
+@media (pointer: coarse) {
+  .epic-handle { opacity: 1; padding: 10px 8px; margin: -10px -2px -10px -10px; font-size: 18px; }
+  .epic-item.sort-dragging { opacity: 0.95; transform: scale(1.01); box-shadow: 0 10px 28px var(--shadow); }
+}

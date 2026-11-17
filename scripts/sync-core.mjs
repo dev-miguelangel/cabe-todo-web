@@ -30,6 +30,8 @@ const SHARED_FILES = [
   'src/views/done-view.js',
   // Ejemplos en el campo "+ Nueva tarea"
   'src/components/quick-add-hints.js',
+  // Épicas (con su valor hora y orden arrastrando): igual en las dos apps
+  'src/views/epics-view.js', 'src/utils/drag-sort.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {
