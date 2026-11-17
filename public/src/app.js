@@ -18,6 +18,7 @@ import { installPwa } from './utils/pwa.js';
 import { startReminders } from './services/reminders.js';
 import { playCasio } from './services/casio.js';
 import { setupDrive, renderDrive } from './views/drive-ui.js';
+import { startTour, maybeStartTour } from './utils/tour.js';
 import { TAB_IDS, normalizeTabOrder } from './core/tabs.js';
 
 const TABS = TAB_IDS;
@@ -85,6 +86,7 @@ async function init() {
   setupDocs();
   setupSettings();
   setupDrive();
+  document.getElementById('tour-replay').addEventListener('click', startTour);
   setupKeyboard();
   ensureRoutines(); // tareas que se repiten y tocan hoy
   // Avisos de fin de bloque, temporizador en cero y reuniones (con la app abierta)
@@ -110,6 +112,7 @@ async function init() {
 
   // Con mouse se escribe de inmediato; en el celular no: abriría el teclado sin que lo pidas
   if (state.tab === 'minimal' && !matchMedia('(pointer: coarse)').matches) focusQuickAdd();
+  maybeStartTour(); // usuario nuevo: recorrido inicial (una sola vez)
 }
 
 /** Foco en el campo de nueva tarea de la vista Hoy. */

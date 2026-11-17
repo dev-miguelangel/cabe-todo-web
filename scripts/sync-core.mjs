@@ -34,6 +34,8 @@ const SHARED_FILES = [
   'src/views/epics-view.js', 'src/utils/drag-sort.js',
   // Editor Markdown (casillas que se marcan en Lectura) y vista Docs (con épicas)
   'src/components/md-editor.js', 'src/views/docs-view.js',
+  // Sincronizar con una carpeta local (solo computador)
+  'src/services/folder-sync.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {

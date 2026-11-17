@@ -93,7 +93,7 @@ const mod = (p) => import(pathToFileURL(join(root, 'public', p)).href);
   assert.deepEqual(at(ms(18, 59), ms(19, 0)), ['block-end:pm'], 'fin de Tarde (tiene "Llamar")');
   assert.deepEqual(dueReminders({ tasks: tasks.filter((t) => t.block !== 'pm'), settings }, ms(18, 59), ms(19, 0)), [], 'bloque sin tareas: sin aviso');
   const end = dueReminders({ tasks, settings }, ms(12, 59), ms(13, 0))[0];
-  assert.deepEqual(blockEndText(end), { title: 'Terminó ☀︎ Mañana', body: 'Te quedan 2 tareas: Informe, Daily' });
+  assert.deepEqual(blockEndText(end), { title: 'Terminó ☀︎ AM', body: 'Te quedan 2 tareas: Informe, Daily' });
   // Reunión en curso que llega a su fin
   const running = tasks.map((t) => (t.id === 'm' ? { ...t, time_entries: [{ start: iso(9, 30), end: null }] } : t));
   assert.deepEqual(dueReminders({ tasks: running, settings }, ms(9, 44), ms(9, 45)).map((e) => e.type), ['meeting-end']);

@@ -20,6 +20,10 @@ Sitio web **mobile-first** e **instalable (PWA)**, hecho con JavaScript, HTML y 
 
 Instalada, abre a pantalla completa y funciona sin conexión. Cuando hay una versión nueva, la app avisa con **Actualizar**.
 
+## Recorrido inicial
+
+La primera vez (sin tareas ni épicas), un recorrido corto muestra lo básico, en este orden: bloques del día → tareas → reuniones → rutinas → épicas → valor hora ($HH). Cada paso ilumina la parte de la pantalla que explica y trae un ejemplo con **Escríbela por mí**. Se puede saltar y repetir desde **Ajustes → Ver recorrido**.
+
 ## Costo por épica
 
 En cada épica (Épicas → abrirla) puedes poner un **valor hora** y su **moneda**. La épica muestra lo trabajado, lo pendiente y el total; el detalle de cada tarea, su costo. Es opcional: sin valor hora no aparece nada.
@@ -27,6 +31,10 @@ En cada épica (Épicas → abrirla) puedes poner un **valor hora** y su **moned
 ## Sincronizar con Google Drive
 
 **Ajustes → Sincronizar con Google Drive → Conectar**. Guarda tus datos en un archivo privado de tu Drive (`Cabe Todo/cabe-todo-sync.json`); después, **Sincronizar ahora** (o el botón ⟳ de Hoy) lo trae, lo mezcla con lo local y sube el resultado. La app solo puede ver ese archivo (permiso `drive.file`). Ver el [plan de sincronización](https://github.com/dev-miguelangel/cabe-todo-ext/blob/main/docs/plan-sincronizacion.md).
+
+## Sincronizar con una carpeta local (computador)
+
+En el computador, Ajustes → **Sincronizar con una carpeta local**: elige una carpeta y ahí queda `cabe-todo-sync.json`. Si eliges la misma carpeta en la app web instalada y en la extensión, quedan sincronizadas solas mientras Chrome dé el permiso. En el celular esta opción no aparece.
 
 ## Pasar tus datos entre la extensión y el celular
 
