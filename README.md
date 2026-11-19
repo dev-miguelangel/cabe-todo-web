@@ -32,6 +32,10 @@ En cada épica (Épicas → abrirla) puedes poner un **valor hora** y su **moned
 
 **Ajustes → Sincronizar con Google Drive → Conectar**. Guarda tus datos en un archivo privado de tu Drive (`Cabe Todo/cabe-todo-sync.json`); después, **Sincronizar ahora** (o el botón ⟳ de Hoy) lo trae, lo mezcla con lo local y sube el resultado. La app solo puede ver ese archivo (permiso `drive.file`). Ver el [plan de sincronización](https://github.com/dev-miguelangel/cabe-todo-ext/blob/main/docs/plan-sincronizacion.md).
 
+## Imágenes en la documentación
+
+En la página de documentación (pestaña Código): **🖼 Imagen**, o pega (⌘V / Ctrl+V) o arrastra la imagen sobre el texto. Se achica a 1600 px como máximo y se comprime en WebP; queda como `![nombre](img:id)` y se guarda dentro de la tarea o épica, así viaja con el respaldo, Drive y la carpeta local. La extensión las muestra, pero no las agrega.
+
 ## Sincronizar con una carpeta local (computador)
 
 En el computador, Ajustes → **Sincronizar con una carpeta local**: elige una carpeta y ahí queda `cabe-todo-sync.json`. Si eliges la misma carpeta en la app web instalada y en la extensión, quedan sincronizadas solas mientras Chrome dé el permiso. En el celular esta opción no aparece.

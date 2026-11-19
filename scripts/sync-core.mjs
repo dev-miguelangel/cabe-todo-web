@@ -36,6 +36,8 @@ const SHARED_FILES = [
   'src/components/md-editor.js', 'src/views/docs-view.js',
   // Sincronizar con una carpeta local (solo computador)
   'src/services/folder-sync.js',
+  // Comentarios (enlace desde la pestaña activa: solo hace algo en la extensión)
+  'src/components/comments.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {

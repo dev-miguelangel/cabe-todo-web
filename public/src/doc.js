@@ -4,6 +4,7 @@
 
 import {
   state, initStore, subscribe, setNotifier, findTask, findEpic, setDoc, setEpicDoc, refreshFromStorage, epicTasks,
+  pruneDocImages, addDocImage,
 } from './services/store.js';
 import { formatMinutes } from './core/parser.js';
 import { todayISO, shortLabel, formatDMY } from './utils/dates.js';
@@ -15,6 +16,7 @@ import { setupThemeToggle, renderThemeToggle } from './components/theme-toggle.j
 import { titleCase } from './utils/text.js';
 import { installKeyboardWatch } from './utils/mobile.js';
 import { installPwa } from './utils/pwa.js';
+import { compressImage, imageId, altFromName } from './utils/image-compress.js';
 import { fillTemplate, firstPlaceholder, defaultTemplate } from './core/templates.js';
 
 const SAVE_DELAY = 700;
@@ -26,6 +28,8 @@ const isEpic = Boolean(epicId);
 const subject = () => (isEpic ? findEpic(epicId) : findTask(taskId));
 const subjectTitle = (s) => titleCase(isEpic ? s.name : s.title);
 const writeDoc = (value) => (isEpic ? setEpicDoc(epicId, value) : setDoc(taskId, value));
+/** Imágenes de la documentación (se agregan desde la app web; aquí se muestran). */
+const docImages = () => subject()?.images || null;
 // Esqueleto opcional para empezar una documentación vacía
 
 let text = '';          // contenido del editor (puede ir por delante de lo guardado)
@@ -143,7 +147,7 @@ async function exportPdf(task) {
       h('thead', {}, gap()),
       h('tfoot', {}, gap()),
       h('tbody', {}, h('tr', {}, h('td', { class: 'print-body' },
-        markdownView(text, { headingBase: 1, empty: `Esta ${isEpic ? 'épica' : 'tarea'} todavía no tiene documentación.` }))))));
+        markdownView(text, { headingBase: 1, images: docImages(), empty: `Esta ${isEpic ? 'épica' : 'tarea'} todavía no tiene documentación.` }))))));
   const title = document.title;
   document.title = `${subjectTitle(task)} - Documentación`;
   const restore = () => {
@@ -152,6 +156,79 @@ async function exportPdf(task) {
   };
   window.addEventListener('afterprint', restore);
   window.print();
+}
+
+// ---------- Imágenes (solo en la app web) ----------
+
+let fileInput = null;
+
+/**
+ * Agrega imágenes donde está el cursor: las comprime, las guarda en la tarea o épica y escribe
+ * ![nombre](img:id) en el texto. Todo en un solo cambio (texto + imagen).
+ */
+async function insertImages(area, files) {
+  const list = [...files].filter((f) => /^image\//.test(f.type));
+  if (!list.length) return false;
+  await flush(); // lo escrito, guardado antes de agregar
+  for (const file of list) {
+    let img;
+    try {
+      img = await compressImage(file);
+    } catch (err) {
+      showToast(err.message || 'No se pudo agregar la imagen.');
+      continue;
+    }
+    const id = imageId();
+    const piece = `![${altFromName(file.name)}](img:${id})`;
+    const { selectionStart: s, selectionEnd: e, value } = area;
+    const before = value.slice(0, s);
+    const lead = !before || before.endsWith('\n\n') ? '' : before.endsWith('\n') ? '\n' : '\n\n'; // en su propio párrafo
+    area.setRangeText(`${lead}${piece}\n`, s, e, 'end');
+    text = area.value;
+    saving = saving.then(async () => {
+      await refreshFromStorage();
+      saved = text; // antes del cambio: así la suscripción no lo trata como cambio de otra ventana
+      addDocImage(isEpic ? 'epic' : 'task', isEpic ? epicId : taskId, id, img.data, text);
+      savedAt = new Date();
+      setStatus();
+    });
+    await saving;
+    const kb = Math.round(img.bytes / 1024);
+    showToast(`Imagen agregada (${img.width}×${img.height}, ${kb} KB).`);
+  }
+  return true;
+}
+
+function pickImages(area) {
+  fileInput?.remove();
+  fileInput = h('input', { type: 'file', accept: 'image/*', multiple: true, hidden: true });
+  fileInput.addEventListener('change', () => {
+    insertImages(area, fileInput.files);
+    fileInput.remove();
+    fileInput = null;
+  });
+  document.body.append(fileInput);
+  fileInput.click();
+}
+
+/** Pegar (⌘V) o arrastrar imágenes sobre el texto. */
+function acceptImages(area) {
+  area.addEventListener('paste', (e) => {
+    const files = [...(e.clipboardData?.files || [])].filter((f) => /^image\//.test(f.type));
+    if (!files.length) return;
+    e.preventDefault();
+    insertImages(area, files);
+  });
+  area.addEventListener('dragover', (e) => {
+    if ([...(e.dataTransfer?.items || [])].some((i) => i.kind === 'file')) e.preventDefault();
+  });
+  area.addEventListener('drop', (e) => {
+    const files = [...(e.dataTransfer?.files || [])].filter((f) => /^image\//.test(f.type));
+    if (!files.length) return;
+    e.preventDefault();
+    area.focus();
+    insertImages(area, files);
+  });
 }
 
 // ---------- Plantillas ----------
@@ -229,6 +306,7 @@ function renderEditor() {
     tab,
     rows: 18,
     headingBase: 1,
+    images: docImages(),
     className: 'doc-editor',
     label: 'Documentación en Markdown',
     placeholder: '# Objetivo\n\nDescribe la tarea, decisiones, enlaces y pasos…\n\nUsa la barra de arriba para títulos, enlaces y bloques de código.',
@@ -245,7 +323,13 @@ function renderEditor() {
       title: 'Elegir una plantilla (se crean en Ajustes → Plantillas)', 'aria-label': 'Elegir plantilla',
       onmousedown: (e) => e.preventDefault(), // no perder la posición del cursor
       onclick: (e) => toggleTemplateMenu(e.currentTarget, area),
-    }, '▤ Plantilla ▾')],
+    }, '▤ Plantilla ▾'), h('button', {
+      type: 'button', class: 'md-tb md-tb-image',
+      title: 'Agregar una imagen (también puedes pegarla o arrastrarla sobre el texto)', 'aria-label': 'Agregar imagen',
+      onmousedown: (e) => e.preventDefault(),
+      onclick: () => pickImages(area),
+    }, '🖼 Imagen')],
+    onArea: acceptImages,
     onKeydown: (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
@@ -284,6 +368,7 @@ async function init() {
     renderMissing();
     return;
   }
+  pruneDocImages(isEpic ? 'epic' : 'task', isEpic ? epicId : taskId); // las que ya no se usan
   text = task.doc || '';
   saved = text;
   savedAt = task.doc_updated_at ? new Date(task.doc_updated_at) : null;
