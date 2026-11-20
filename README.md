@@ -34,7 +34,7 @@ En cada épica (Épicas → abrirla) puedes poner un **valor hora** y su **moned
 
 ## Imágenes en la documentación
 
-En la página de documentación (pestaña Código): **🖼 Imagen**, o pega (⌘V / Ctrl+V) o arrastra la imagen sobre el texto. Se achica a 1600 px como máximo y se comprime en WebP; queda como `![nombre](img:id)` y se guarda dentro de la tarea o épica, así viaja con el respaldo, Drive y la carpeta local. La extensión las muestra, pero no las agrega.
+En la página de documentación (pestaña Código): **🖼 Imagen**, o pega (⌘V / Ctrl+V) o arrastra la imagen sobre el texto. Se achica a 1600 px como máximo y se comprime en WebP; queda como `![nombre](img:id)`. En **Google Drive** cada imagen es un archivo aparte en `Cabe Todo/img/{épica}/{id de la tarea}/` (las de una épica, en `img/{épica}/`), que se sube una sola vez: en `cabe-todo-sync.json` va solo su referencia, y los otros equipos la descargan al sincronizar. El respaldo y la carpeta local llevan las imágenes completas. Al quitarlas del texto, su archivo va a la papelera de Drive. La extensión las muestra, pero no las agrega.
 
 ## Sincronizar con una carpeta local (computador)
 
