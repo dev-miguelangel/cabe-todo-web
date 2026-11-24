@@ -24,6 +24,10 @@ Instalada, abre a pantalla completa y funciona sin conexión. Cuando hay una ver
 
 La primera vez (sin tareas ni épicas), un recorrido corto muestra lo básico, en este orden: bloques del día → tareas → reuniones → rutinas → épicas → valor hora ($HH). Cada paso ilumina la parte de la pantalla que explica y trae un ejemplo con **Escríbela por mí**. Se puede saltar y repetir desde **Ajustes → Ver recorrido**.
 
+## Tareas ancladas
+
+En el detalle de una tarea, **📌 Anclar** la deja arriba en Hoy, sin fecha y visible todos los días. Al marcarla como hecha queda en el bloque en curso de ese día y deja de estar anclada. **📌 Desanclar** la devuelve al backlog.
+
 ## Copiar el título
 
 El botón ⧉ junto al título de una tarea (en su detalle y en su documentación) o de una épica copia el texto tal como se ve. Muestra ✓ al copiar.
