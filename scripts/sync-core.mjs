@@ -38,6 +38,8 @@ const SHARED_FILES = [
   'src/services/folder-sync.js',
   // Comentarios (enlace desde la pestaña activa: solo hace algo en la extensión)
   'src/components/comments.js',
+  // Botón ⧉ para copiar el título de una tarea o épica
+  'src/components/copy-button.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {

@@ -24,6 +24,10 @@ Instalada, abre a pantalla completa y funciona sin conexión. Cuando hay una ver
 
 La primera vez (sin tareas ni épicas), un recorrido corto muestra lo básico, en este orden: bloques del día → tareas → reuniones → rutinas → épicas → valor hora ($HH). Cada paso ilumina la parte de la pantalla que explica y trae un ejemplo con **Escríbela por mí**. Se puede saltar y repetir desde **Ajustes → Ver recorrido**.
 
+## Copiar el título
+
+El botón ⧉ junto al título de una tarea (en su detalle y en su documentación) o de una épica copia el texto tal como se ve. Muestra ✓ al copiar.
+
 ## Costo por épica
 
 En cada épica (Épicas → abrirla) puedes poner un **valor hora** y su **moneda**. La épica muestra lo trabajado, lo pendiente y el total; el detalle de cada tarea, su costo. Es opcional: sin valor hora no aparece nada.
