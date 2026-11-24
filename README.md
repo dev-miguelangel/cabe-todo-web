@@ -24,6 +24,15 @@ Instalada, abre a pantalla completa y funciona sin conexión. Cuando hay una ver
 
 La primera vez (sin tareas ni épicas), un recorrido corto muestra lo básico, en este orden: bloques del día → tareas → reuniones → rutinas → épicas → valor hora ($HH). Cada paso ilumina la parte de la pantalla que explica y trae un ejemplo con **Escríbela por mí**. Se puede saltar y repetir desde **Ajustes → Ver recorrido**.
 
+## Novedades
+
+Después de actualizar, la app muestra **una sola vez** un carrusel con lo nuevo. Cada lámina trae un ejemplo y un caso de uso, y se puede deslizar con el dedo, con las flechas o con Atrás / Siguiente. Para volver a verlas: **Ajustes → Novedades** (al pie). Al usuario nuevo no se le muestran, porque ya tiene el recorrido inicial.
+
+- **Registro de mejoras:** `public/src/data/updates.js`, de la más reciente a la más antigua.
+- **Registro de lo visto:** en cada equipo, en `localStorage` (`cabetodo:seenUpdates`), por id: `{ "<id>": { at, viewed } }`. `viewed: false` significa que se cerró sin llegar a esa lámina. Igual cuenta como mostrada y no se repite.
+
+**Para anunciar algo nuevo**, agrega una entrada al principio de `updates.js` con un `id` nuevo, que no se cambia nunca, más `version`, `date`, `icon`, `title`, `text`, `useCase` y, si quieres, `demo` y `tip`. Al publicar, quien no la haya visto la ve una vez. `npm test` revisa que los ids no se repitan y que cada entrada esté completa.
+
 ## Tareas ancladas
 
 En el detalle de una tarea, **📌 Anclar** la deja arriba en Hoy, sin fecha y visible todos los días. Al marcarla como hecha queda en el bloque en curso de ese día y deja de estar anclada. **📌 Desanclar** la devuelve al backlog.

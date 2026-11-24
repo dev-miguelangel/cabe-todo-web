@@ -151,3 +151,30 @@ const mod = (p) => import(pathToFileURL(join(root, 'public', p)).href);
   assert.equal(drive.file, '{ esto no es un respaldo');
   console.log('OK: sincronizar con Drive (crear, mezclar, choque entre equipos, archivo dañado)');
 }
+
+// ---------- Novedades: registro de lo nuevo y de lo visto ----------
+{
+  const { UPDATES } = await import(join(root, 'public/src/data/updates.js'));
+  const ids = UPDATES.map((u) => u.id);
+  assert.equal(new Set(ids).size, ids.length, 'cada novedad tiene un id único');
+  for (const u of UPDATES) {
+    assert.ok(u.id && u.version && u.icon && u.title && u.text, `novedad completa: ${u.id}`);
+    assert.match(u.date, /^\d{4}-\d{2}-\d{2}$/, `fecha AAAA-MM-DD: ${u.id}`);
+    assert.ok(u.useCase?.who && u.useCase?.story, `con caso de uso: ${u.id}`);
+    if (u.demo) assert.ok(['quickadd', 'cards', 'steps'].includes(u.demo.type), `demo conocida: ${u.id}`);
+  }
+  const dates = UPDATES.map((u) => u.date);
+  assert.deepEqual(dates, [...dates].sort().reverse(), 'la más reciente primero');
+
+  // Lo visto se guarda por id: solo quedan pendientes las que no están en el registro
+  const mem = {};
+  globalThis.localStorage = { getItem: (k) => mem[k] ?? null, setItem: (k, v) => { mem[k] = String(v); }, removeItem: (k) => { delete mem[k]; } };
+  const W = await import(join(root, 'public/src/utils/whats-new.js'));
+  assert.equal(W.unseenUpdates().length, UPDATES.length, 'sin registro: todas pendientes');
+  mem['cabetodo:seenUpdates'] = JSON.stringify({ [ids[0]]: { at: '2026-11-24T00:00:00Z', viewed: true } });
+  assert.deepEqual(W.unseenUpdates().map((u) => u.id), ids.slice(1), 'la vista ya no se muestra');
+  mem['cabetodo:seenUpdates'] = 'no es json';
+  assert.equal(W.unseenUpdates().length, UPDATES.length, 'registro dañado: se ignora sin romper');
+  delete globalThis.localStorage;
+  console.log('OK: novedades (registro de lo nuevo y de lo visto)');
+}

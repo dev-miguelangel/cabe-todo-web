@@ -1,0 +1,88 @@
+/* Novedades: carrusel en el modal (utils/whats-new.js). Solo usa los tokens del tema, así sirve en oscuro y claro. */
+
+.modal.wn-modal { width: min(440px, calc(100vw - 24px)); }
+.wn { display: flex; flex-direction: column; gap: 12px; }
+.wn-lead { margin: -2px 0 0; font-size: 13px; color: var(--muted); }
+
+/* Pista horizontal con scroll-snap: se desliza con el dedo, las flechas o los botones */
+.wn-track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  overscroll-behavior-x: contain; scrollbar-width: none; border-radius: var(--radius);
+}
+.wn-track::-webkit-scrollbar { display: none; }
+.wn-track:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .wn-track { scroll-behavior: auto; } }
+
+.wn-slide {
+  flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always;
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px; border-radius: var(--radius);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 14%, var(--raised)) 0%, var(--raised) 55%);
+  border: 1px solid var(--border);
+}
+
+.wn-hero { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.wn-icon {
+  display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px;
+  font-size: 28px; line-height: 1; background: color-mix(in srgb, var(--accent) 20%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent) inset;
+}
+.wn-version {
+  font-size: 11px; font-weight: 600; color: var(--accent-text); padding: 3px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.wn-title { margin: 2px 0 0; font-size: 18px; font-weight: 700; line-height: 1.25; color: var(--text); }
+.wn-text { margin: 0; font-size: 14px; line-height: 1.5; color: var(--label); }
+
+/* Ejemplos visuales: imitan la interfaz real, en pequeño */
+.wn-demo { margin: 2px 0 0; padding: 10px; border-radius: 10px; background: var(--bg); border: 1px dashed var(--border); }
+.wn-demo-caption { display: block; margin-bottom: 6px; font-size: 11px; color: var(--muted); }
+.wn-fake-input {
+  display: flex; align-items: center; gap: 1px; padding: 8px 10px; border-radius: 8px;
+  background: var(--field); font-size: 13px; color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.wn-caret { width: 2px; height: 1.1em; background: var(--accent); animation: wn-blink 1s steps(1) infinite; }
+@keyframes wn-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .wn-caret { animation: none; } }
+
+.wn-fake-divider { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; color: var(--muted); }
+.wn-fake-divider > span { flex: 1; height: 1px; background: var(--border); }
+.wn-fake-card {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: var(--raised);
+}
+.wn-fake-card + .wn-fake-card { margin-top: 6px; }
+.wn-fake-check {
+  display: grid; place-items: center; flex: none; width: 16px; height: 16px; border-radius: 50%;
+  border: 1.5px solid var(--muted); font-size: 10px; color: var(--on-accent);
+}
+.wn-fake-card.done .wn-fake-check { background: var(--done); border-color: var(--done); }
+.wn-fake-card.done strong { text-decoration: line-through; color: var(--muted); }
+.wn-fake-body { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.wn-fake-body strong { font-size: 13px; font-weight: 600; color: var(--text); }
+.wn-fake-body small { font-size: 11px; color: var(--muted); }
+.wn-fake-copy { color: var(--accent-text); font-size: 15px; padding: 2px 6px; border-radius: 6px; background: var(--hover); }
+
+.wn-demo-steps { margin: 2px 0 0; padding: 10px 10px 10px 30px; font-size: 13px; color: var(--text); line-height: 1.7; }
+.wn-demo-steps li::marker { color: var(--accent-text); font-weight: 700; }
+
+.wn-case {
+  display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent); border-left: 3px solid var(--accent);
+}
+.wn-case-label { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: var(--accent-text); }
+.wn-case strong { font-size: 13px; color: var(--text); }
+.wn-case p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--label); }
+.wn-tip { margin: 0; font-size: 12px; color: var(--muted); }
+.wn-tip::before { content: '→ '; color: var(--accent-text); }
+
+/* Navegación: Atrás · puntos · Siguiente */
+.wn-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.wn-dots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.wn-dot {
+  width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: var(--pending);
+  transition: width 0.2s, background 0.2s;
+}
+.wn-dot.on { width: 22px; background: var(--accent); }
+.wn-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wn-prev:disabled { opacity: 0.4; cursor: default; }
+.wn-next { min-width: 112px; }
