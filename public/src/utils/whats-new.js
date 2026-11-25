@@ -1,43 +1,47 @@
 // Novedades (solo web): un carrusel que cuenta lo nuevo con ejemplos de uso, UNA vez después de actualizar.
 //
-// Lo que hay está en data/updates.js. Lo que ya se vio se guarda en este equipo (localStorage) por id:
-//   cabetodo:seenUpdates = { "<id>": { at: "<ISO>", viewed: true|false } }
+// Lo que hay está en data/updates.js. Lo que ya se vio va en los ajustes sincronizados, por id:
+//   settings.seen_updates = { "<id>": { at: "<ISO>", viewed: true|false } }
 // viewed: true si la lámina llegó a mostrarse; false si se cerró antes (igual cuenta como vista: no se repite).
+// Al sincronizar (Drive, carpeta o respaldo) se une con lo visto en los otros equipos (core/merge.js).
+// Antes (v1.7.2) se guardaba solo en este equipo (localStorage): se pasa a los ajustes la primera vez.
 // Un usuario nuevo (el que ve el recorrido inicial) no recibe novedades: todo queda como visto.
 // Desde Ajustes → Novedades se pueden volver a ver todas.
 
-import { state } from '../services/store.js';
+import { state, seenUpdates, markUpdatesSeen } from '../services/store.js';
 import { h, openModal, closeModal, isModalOpen } from './ui.js';
 import { UPDATES } from '../data/updates.js';
 
-const SEEN_KEY = 'cabetodo:seenUpdates';
+const LEGACY_SEEN_KEY = 'cabetodo:seenUpdates'; // v1.7.2: lo visto solo en este equipo
 const TOUR_KEY = 'cabetodo:tourDone';
 const MAX_SLIDES = 5; // al estrenar las novedades, solo las más recientes (el resto queda como vista)
 
 // ---------- Registro de lo visto ----------
 
+/** Lo visto según los ajustes sincronizados. */
 export function readSeen() {
+  return seenUpdates();
+}
+
+/** v1.7.2 guardaba lo visto en localStorage: pasarlo a los ajustes una vez y borrar la copia local. */
+export function migrateLegacySeen() {
+  let raw = null;
+  try { raw = localStorage.getItem(LEGACY_SEEN_KEY); } catch { return; }
+  if (!raw) return;
   try {
-    const raw = JSON.parse(localStorage.getItem(SEEN_KEY) || '{}');
-    return raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
-  } catch {
-    return {};
-  }
+    const legacy = JSON.parse(raw);
+    if (legacy && typeof legacy === 'object' && !Array.isArray(legacy)) markUpdatesSeen(legacy);
+  } catch { /* dañado: se descarta */ }
+  try { localStorage.removeItem(LEGACY_SEEN_KEY); } catch { /* sin almacenamiento */ }
 }
 
-/** Marca como vistas (viewed: la lámina se mostró). No baja un viewed: true a false. */
+/** Marca como vistas (viewed: la lámina se mostró). Se une con lo que había: no baja un viewed: true. */
 function markSeen(ids, viewed) {
-  const seen = readSeen();
   const at = new Date().toISOString();
-  for (const id of ids) {
-    if (seen[id]?.viewed) continue;
-    if (seen[id] && !viewed) continue;
-    seen[id] = { at, viewed: Boolean(viewed) };
-  }
-  try { localStorage.setItem(SEEN_KEY, JSON.stringify(seen)); } catch { /* sin almacenamiento: se verían de nuevo */ }
+  markUpdatesSeen(Object.fromEntries(ids.map((id) => [id, { at, viewed: Boolean(viewed) }])));
 }
 
-/** Novedades que este equipo todavía no ha visto (la más reciente primero). */
+/** Novedades que todavía no se han visto en ningún equipo sincronizado (la más reciente primero). */
 export function unseenUpdates() {
   const seen = readSeen();
   return UPDATES.filter((u) => !seen[u.id]);
@@ -177,6 +181,7 @@ export function showWhatsNew(list = UPDATES, { replay = false } = {}) {
  * Usuario nuevo (le toca el recorrido inicial): todo queda como visto, sin mostrar nada.
  */
 export function maybeShowWhatsNew() {
+  migrateLegacySeen();
   let tourDone = false;
   try { tourDone = localStorage.getItem(TOUR_KEY) === '1'; } catch { tourDone = true; }
   const isNewUser = !tourDone && !state.tasks.length && !state.epics.length;

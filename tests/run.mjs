@@ -166,15 +166,23 @@ const mod = (p) => import(pathToFileURL(join(root, 'public', p)).href);
   const dates = UPDATES.map((u) => u.date);
   assert.deepEqual(dates, [...dates].sort().reverse(), 'la más reciente primero');
 
-  // Lo visto se guarda por id: solo quedan pendientes las que no están en el registro
-  const mem = {};
-  globalThis.localStorage = { getItem: (k) => mem[k] ?? null, setItem: (k, v) => { mem[k] = String(v); }, removeItem: (k) => { delete mem[k]; } };
+  // Lo visto va en los ajustes sincronizados, por id: solo quedan pendientes las que no están ahí
+  const S = await import(join(root, 'public/src/services/store.js'));
   const W = await import(join(root, 'public/src/utils/whats-new.js'));
+  S.state.settings = { ...S.state.settings, seen_updates: {} };
   assert.equal(W.unseenUpdates().length, UPDATES.length, 'sin registro: todas pendientes');
-  mem['cabetodo:seenUpdates'] = JSON.stringify({ [ids[0]]: { at: '2026-11-24T00:00:00Z', viewed: true } });
+  S.markUpdatesSeen({ [ids[0]]: { at: '2026-11-24T00:00:00Z', viewed: true } });
   assert.deepEqual(W.unseenUpdates().map((u) => u.id), ids.slice(1), 'la vista ya no se muestra');
+
+  // v1.7.2 lo guardaba en localStorage: se pasa a los ajustes y se borra la copia local
+  const mem = { 'cabetodo:seenUpdates': JSON.stringify({ [ids[1]]: { at: '2026-11-24T01:00:00Z', viewed: false } }) };
+  globalThis.localStorage = { getItem: (k) => mem[k] ?? null, setItem: (k, v) => { mem[k] = String(v); }, removeItem: (k) => { delete mem[k]; } };
+  W.migrateLegacySeen();
+  assert.deepEqual(W.unseenUpdates().map((u) => u.id), ids.slice(2), 'lo visto en v1.7.2 se conserva');
+  assert.equal(mem['cabetodo:seenUpdates'], undefined, 'la copia local se borra');
   mem['cabetodo:seenUpdates'] = 'no es json';
-  assert.equal(W.unseenUpdates().length, UPDATES.length, 'registro dañado: se ignora sin romper');
+  W.migrateLegacySeen();
+  assert.equal(mem['cabetodo:seenUpdates'], undefined, 'una copia dañada se descarta sin romper');
   delete globalThis.localStorage;
   console.log('OK: novedades (registro de lo nuevo y de lo visto)');
 }

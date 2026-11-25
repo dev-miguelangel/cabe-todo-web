@@ -85,7 +85,7 @@ export const UPDATES = [
     id: '1.3.0-costo-epica',
     version: '1.3.0',
     date: '2026-11-17',
-    icon: '💲',
+    icon: '💰',
     title: 'Cuánto vale cada épica',
     text: 'Ponle un valor hora a una épica (CLP, USD o EUR) y te muestra el total, lo trabajado y lo que falta. Cada tarea muestra su costo.',
     useCase: {

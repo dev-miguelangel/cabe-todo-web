@@ -29,7 +29,7 @@ La primera vez (sin tareas ni épicas), un recorrido corto muestra lo básico, e
 Después de actualizar, la app muestra **una sola vez** un carrusel con lo nuevo. Cada lámina trae un ejemplo y un caso de uso, y se puede deslizar con el dedo, con las flechas o con Atrás / Siguiente. Para volver a verlas: **Ajustes → Novedades** (al pie). Al usuario nuevo no se le muestran, porque ya tiene el recorrido inicial.
 
 - **Registro de mejoras:** `public/src/data/updates.js`, de la más reciente a la más antigua.
-- **Registro de lo visto:** en cada equipo, en `localStorage` (`cabetodo:seenUpdates`), por id: `{ "<id>": { at, viewed } }`. `viewed: false` significa que se cerró sin llegar a esa lámina. Igual cuenta como mostrada y no se repite.
+- **Registro de lo visto:** en los ajustes sincronizados (`settings.seen_updates`), por id: `{ "<id>": { at, viewed } }`. `viewed: false` significa que se cerró sin llegar a esa lámina. Igual cuenta como mostrada y no se repite. Al sincronizar con Drive, con la carpeta o con un respaldo, lo visto en cada equipo **se une**: lo que viste en el celular no vuelve a aparecer en el computador después de sincronizar. Marcar algo como visto no deja cambios pendientes (el ⟳ no se pone amarillo); viaja en la siguiente sincronización.
 
 **Para anunciar algo nuevo**, agrega una entrada al principio de `updates.js` con un `id` nuevo, que no se cambia nunca, más `version`, `date`, `icon`, `title`, `text`, `useCase` y, si quieres, `demo` y `tip`. Al publicar, quien no la haya visto la ve una vez. `npm test` revisa que los ids no se repitan y que cada entrada esté completa.
 
