@@ -40,6 +40,8 @@ const SHARED_FILES = [
   'src/components/comments.js',
   // Botón ⧉ para copiar el título de una tarea o épica
   'src/components/copy-button.js',
+  // Tarjeta de tarea, sugerencias del bloque (mover o versión mínima) y vista Rutinas: iguales en las dos apps
+  'src/components/cards.js', 'src/components/suggestion.js', 'src/views/routines-view.js',
 ];
 
 if (!existsSync(join(ext, 'manifest.json'))) {

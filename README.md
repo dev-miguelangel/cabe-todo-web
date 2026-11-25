@@ -33,6 +33,14 @@ Después de actualizar, la app muestra **una sola vez** un carrusel con lo nuevo
 
 **Para anunciar algo nuevo**, agrega una entrada al principio de `updates.js` con un `id` nuevo, que no se cambia nunca, más `version`, `date`, `icon`, `title`, `text`, `useCase` y, si quieres, `demo` y `tip`. Al publicar, quien no la haya visto la ve una vez. `npm test` revisa que los ids no se repitan y que cada entrada esté completa.
 
+## Versión mínima de las rutinas
+
+Inspirada en la regla de los 2 minutos de *Hábitos atómicos*. Cada rutina puede tener una **versión mínima**, una versión tan corta que no haya excusa: "Leer 30m" → "Leer 1 página 2m". Se define en **Rutinas → Editar** o desde el detalle de la tarea. Sin duración, dura 2 minutos.
+
+- Si un bloque va mal y tiene un hábito con versión mínima, la sugerencia del porcentaje propone **hacer la mínima** en vez de mover el hábito.
+- En el detalle de la tarea: **Hacer solo la mínima hoy** y **↺ Volver a la completa**. La tarjeta muestra `· mín`.
+- Hecha en su versión mínima cuenta como hecha, y queda registrado que fue la mínima.
+
 ## Tareas ancladas
 
 En el detalle de una tarea, **📌 Anclar** la deja arriba en Hoy, sin fecha y visible todos los días. Al marcarla como hecha queda en el bloque en curso de ese día y deja de estar anclada. **📌 Desanclar** la devuelve al backlog.

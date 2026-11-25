@@ -16,6 +16,27 @@
 
 export const UPDATES = [
   {
+    id: '1.7.3-version-minima',
+    version: '1.7.3',
+    date: '2026-11-24',
+    icon: '⏬',
+    title: 'Versión mínima de tus rutinas',
+    text: 'Inspirada en la regla de los 2 minutos de Hábitos atómicos: cada rutina puede tener una versión tan corta que no haya excusa. Cuando el día no da, haces la mínima y el hábito sigue.',
+    useCase: {
+      who: 'El día en que todo se complica',
+      story: 'Tu rutina es "Leer 30m" y su versión mínima, "Leer 1 página". Hoy la mañana viene llena y el bloque está en 35%. Cabe Todo te propone hacer solo la página: el bloque sube a 70% y no cortas la costumbre.',
+    },
+    demo: {
+      type: 'cards',
+      label: '✦ AM: 35% → 70%',
+      cards: [
+        { title: 'Informe mensual', meta: '1h' },
+        { title: 'Leer 1 página', meta: '2m · mín (en vez de 30m)' },
+      ],
+    },
+    tip: 'Defínela en Rutinas → Editar, o desde el detalle de la tarea. Sin duración, dura 2 minutos.',
+  },
+  {
     id: '1.7.1-ancladas',
     version: '1.7.1',
     date: '2026-11-24',

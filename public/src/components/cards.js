@@ -1,3 +1,4 @@
+// ⚠ Copiado desde cabe-todo-ext con scripts/sync-core.mjs. No editar aquí.
 // Tarjeta de tarea, compartida por las vistas Hoy, Tareas y Épicas.
 
 import { formatMinutes, formatClock } from '../core/parser.js';
@@ -77,7 +78,13 @@ export function renderCard(task, opts) {
   }
 
   const mark = task.certainty === 'unsure' ? ' ?' : task.certainty === 'sure' ? ' !' : '';
-  li.querySelector('.minutes').textContent = formatMinutes(task.minutes) + mark;
+  const minutesEl = li.querySelector('.minutes');
+  minutesEl.textContent = formatMinutes(task.minutes) + mark;
+  if (task.full) {
+    // Hecha (o por hacer) en su versión mínima: regla de los 2 minutos
+    minutesEl.textContent += ' · mín';
+    minutesEl.title = `Versión mínima de "${titleCase(task.full.title)}" (${formatMinutes(task.full.minutes)})`;
+  }
   if (meeting) {
     const time = li.querySelector('.meeting-time');
     time.hidden = false;
